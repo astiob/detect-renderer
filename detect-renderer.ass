@@ -1,0 +1,160 @@
+﻿[Script Info]
+ScriptType: v4.00+
+Kerning: yes
+Language: en
+PlayResX: 384
+PlayResY: 288
+YCbCr Matrix: None
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,Arial,18,&HFF000000,&HFF00FFFF,&H00000000,&H00000000,-1,0,0,0,0,0,0,0,1,0,0,5,40,40,20,1
+Style: **Default,Arial,18,&H00000000,&HFF00FFFF,&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,0,0,5,40,40,20,1
+Style: Old,Arial,18,&H00000000,&H0000FFFF,&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,0,0,5,40,40,20,1
+Style: *Old,Arial,18,&HFF000000,&H0000FFFF,&H00000000,&H00000000,-1,0,0,0,0,0,0,0,1,0,0,5,40,40,20,1
+Style: Hidden,Arial,18,&HFF000000,&H0000FFFF,&H00000000,&H00000000,-1,0,0,0,0,0,0,0,1,0,0,5,40,40,20,1
+Style: Box,Arial,18,&H00000000,&H0000FFFF,&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,0,0,7,40,40,20,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+; \{libass and asa display a brace and this text. VSFilter displays a backslash and reads this text as a comment/override.}
+; {VSFilter displays a brace and this text. libass and asa display nothing and read this text as a comment/override.
+; Perian reads each brace group as either {\bunch\of\well-formed\tags\all\of\which\it\knows} or {comment}.
+; Mainline VSFilter history:
+; Guliverkli:
+;   r8   2.24 1.0.0.0 initial commit
+;   r56  2.25 1.0.0.1 MEDIATYPE_Subtitle
+;   r65  2.26 1.0.0.2 ReadOrder in Matroska
+;   r83  2.27 1.0.0.3
+;   r98  2.28 1.0.0.4
+;   r109 2.29 1.0.0.5 dialogue.style.trimleft('*'), use "Default" if style doesn't exist (earlier versions crash): can't detect this because style.name.trimleft('*') in all versions
+;   r126 2.30 1.0.0.6
+;   r133 2.31 1.0.0.7
+;   r139 2.32 1.0.0.8
+;   r159 2.33 1.0.0.9 fix hanging (infinite loop) on unpaired { or <
+;   r280 2.34 1.0.1.0 no subtitle changes
+;   r331 2.35 1.0.1.1 no subtitle changes
+;   r357 2.36 1.0.1.2 no subtitle changes
+;   r453 2.37 1.0.1.3 ASS2, \kt, rectangle \clip when m_relativeTo == 1
+; Aegisub:
+;  r1398 \fax \fay \pos(float) \org(float) \mov(float)  imported from somewhere  5d21970bbc9c63c928235ea1c62ac4127cc23100
+;  r2278 \xbord \ybord \xshad \yshad      https://github.com/Aegisub/Aegisub.git@13654219c26158e1d75cefc5467849686fdb22b3
+;  r2279 \beN \t(\be)                     https://github.com/Aegisub/Aegisub.git@5d3b1fe8c2cee5ff3bd861dae1839d5ed9bc947b <------ tadadada, the single most troublesome ASS commit ever
+;  r2284 \blur                            https://github.com/Aegisub/Aegisub.git@ea79951788b45bc31286c6ced85bc6608ae625d4 <------ runner-up
+;  r2286 \iclip(rectangle)                https://github.com/Aegisub/Aegisub.git@0e6dd47bf0546c548386a6bbbf85cc96e338f04d (\iclip(rect)\clip(rect) stays iclip)
+;  r2287 \iclip(vector)                   https://github.com/Aegisub/Aegisub.git@b5144d09a1458797cec3f34588add964c723e22e (\iclip(rect)\clip(rect) becomes clip)
+; Guliverkli2: ({svn,http}://svn.code.sf.net/p/guliverkli2/code/)
+;    r2  \fax \fay \pos(float) \org(float) \mov(float)  imported from somewhere
+;    r62 \beN \t(\be) \blur <------ the combined most troublesome ASS commit ever (notice how conveniently both leaders are compressed into a single commit now!)
+;    r63 \xbord \ybord \xshad \yshad
+;    r64 \iclip
+; VSFilterMod: (https://code.google.com/p/vsfiltermod/)
+;    r2  everything?
+;    r11 (broken [infinite loop]) nested parentheses; \[1-4]img now takes decimal positions instead of hexadecimal
+;    r17 fixed parentheses; \[1-4]img position now optional
+;    ......
+;    r76 broke \fay (it's now a no-op) on SSE2-capable CPUs (missing "else") (when this is added to MPC-HC, it's mysteriousy fixed)
+;    ......
+; MPC-HC:
+;    2.39        https://github.com/mpc-hc/mpc-hc.git@3244957f4563575d22bf109de27a703558611b19 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@1688 MPC-HC 1.3.1688.0 VSFilterMod@20
+;    2.39        https://github.com/mpc-hc/mpc-hc.git@21c0cb78a588672ad4ce69f4d1c5b4cf60ba3ee9 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@1746 MPC-HC 1.3.1746.0 VSFilterMod@25 + fix
+;    2.40.1924.0 https://github.com/mpc-hc/mpc-hc.git@101e56669d1821d15a201c4b0812e5555ae8a6e2 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@1924 MPC-HC 1.3.1924.0 VSFilterMod@84
+;    2.41.2.4483 https://github.com/mpc-hc/mpc-hc.git@3723d940106be42a4361cba18c91de62054103ab https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@4483 MPC-HC 1.6.2.4483 VSFilterMod mostly removed
+;    2.41.308    https://github.com/mpc-hc/mpc-hc.git@fca1d9d3fb6170c2e2379de235f3f39417683ddf                                                              MPC-HC 1.7.1.308  parser cache
+; Stuff still broken in MPC-HC because of VSFilterMod:
+;    nested parentheses are supported (they shouldn't be)
+;    \[1-4]a and \alpha values are &0xFF (they shouldn't be) https://code.google.com/p/xy-vsfilter/issues/detail?id=80
+; Stuff still broken in MPC-HC because speeeed:
+;    oh god dem single numeric arguments. they should be taken from the string argument array, not from cmd.Mid()
+; Version history (mainly MPC-HC):
+; major version, version in the filter property dialogue, version in the resource file embedded in the DLL
+;   2.37 2.37 1.0.1.3   guliverkli@453
+;   2.38 2.38 1.0.1.4   guliverkli2@2
+;   2.39 2.39 1.0.1.5   guliverkli2@67
+;        2.39 1.0.1.5   https://github.com/mpc-hc/mpc-hc.git@19fb30b3effa1a8d221240ef42e47aaf8bf9e495 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@692 (combines guliverkli2@58-68)
+;        2.39 1.1.604.0 https://github.com/mpc-hc/mpc-hc.git@aebfddb159555e132fb434e689321fef5689c4b6 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@694
+;        2.39 1.1.714.0 https://github.com/mpc-hc/mpc-hc.git@3d4853aa593f0790fe91958a822552727403c829 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@722
+;        2.39 1.2.0.0   https://github.com/mpc-hc/mpc-hc.git@9a174874a81309d5f3cc307245c0c15730c81b06 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@933
+;        2.39 2.39.5.0  guliverkli2@93
+;        2.39 2.39.5.1  guliverkli2@95
+;        2.39 2.39.5.2  guliverkli2@102 \ I don't think there are
+;        2.39 2.39.5.3  guliverkli2@106 / any real changes in here
+;        2.39 MPC_VER   https://github.com/mpc-hc/mpc-hc.git@4fede9d52c08fb0455baaad2973e8346fe413ac0 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@1576
+; the version in the resource file is MPC_VER forever after, so it is omitted from here on
+;   2.40 2.40.1875.0 https://github.com/mpc-hc/mpc-hc.git@2679ecc7eb344c3ee29fb060fcf214d75199c4b1 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@1875 MPC-HC 1.3.1875.0
+;        2.40.XXXX.0                                                                               https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@XXXX MPC-HC 1.?.XXXX.0 (up to 1.4.2833.0)
+;       *2.40.1.2834 https://github.com/mpc-hc/mpc-hc.git@8c25f2ac194ab67f7483106ab951458ff83b1ddc https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@2834 MPC-HC 1.4.1.2834
+;       *2.40.X.YYYY                                                                               https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@YYYY MPC-HC 1.?.X.YYYY
+;   2.41 2.41.2.4481 https://github.com/mpc-hc/mpc-hc.git@add073a3b74080eb2e9054e815ec801f04c13007 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@4481 MPC-HC 1.6.2.4481
+;        2.41.2.XXXX                                                                               https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@XXXX MPC-HC 1.6.2.XXXX
+;        2.41.4499   https://github.com/mpc-hc/mpc-hc.git@586dc17263770ebd799c8a4753af0cfc8b99bf8e https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@4499 MPC-HC 1.6.2.4499
+;        2.41.XXXX                                                                                                                                              MPC-HC 1.?.?.XXXX (up to 1.7.0.7859)
+;        2.41.2      https://github.com/mpc-hc/mpc-hc.git@ece12e79d2631f3de2938783618cc2304302db25                                                              MPC-HC 1.7.0.2
+;        2.41.Xxx                                                                                                                                               MPC-HC 1.7.?.Xxx
+; * CCCP styles these as 2.40.YYYY.X. (CCCP switched to xy-VSFilter before MPC-HC VSFilter's version number reached 2.41.)
+; TODO: "VSFilter" vs "DirectVobSub"?
+; TODO: asa, Subtitler, TextSub (?)
+Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\fscx4000\fscy4000}█{Perian ignores ASS vector drawings and mishandles the video this script comes with in various mysterious ways.}
+Dialogue: 0,0:00:00.00,0:00:10.00,*Default,,0,0,0,,{\pos(192,144)\1a&HFF&}.{\1a&H00&}You are using Perian.\NIts support for styled\N{\1a&HFF&}.{\1a&H00&}subtitles is very limited.{But the code seems quite nice.}
+Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\p1}m 0 0 l 384 0 384 288 0 288{\p0}
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\iclip(0,0,0,0)\clip(0,0,0,0)}You are using Aegisub v2.1.2\N{\1a&HFF&}.{\1a}release preview SVN r2286.\NYour copy is severely outdated!{Because I can.}
+; Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\iclip(0,0,384,288)\org(()\clip(0,0,384,288)}\h{\fax1\fay1}You are using VSFilter{\fax0\fay0}\h\N{\1a&HFF&}.{\1a}\h{\fax1\fay1}2.39 to 2.39.1687.{\fax0\fay0}\h\N\h{\fax1\fay1}Your copy is outdated!\h
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\iclip(0,0,384,288)\org(()\clip(0,0,384,288)\1a&HFF&}.{\1a}\h{\fax1\fay1}You are using VSFilter 2.39.{\fax0\fay0}\h\N\h{\fax1\fay1}Your copy is outdated!\h
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(0,0,0,0)\org(()\clip(0,0,384,288)\clip(0,0,0,,)\fax1\fay1}\h{\fax0\fay0}You are using xy-VSFilter{\fax1\fay1}\h\N.{\fax0\fay0}20111003 to 20111024.{\fax1\fay1}\N\h{\fax0\fay0}Your copy is outdated!\h
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\1a&HFF&\1va(0,0,0,0)}You are using VSFilterMod.{red background}
+Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&HFF0000&}{with gradient activated, VSFilterMod treats colors as RGB rather than BGR}{\1a&HFF&\1va(0,0,0,0)\fay200\p1}m 0 0 l 384 0 384 288 0 288{\p0}
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\1a&HFF&\1va(0,0,0,0)\fay200}You are using VSFilterMod 1.1 SVN\N{\fscy0}.{\fscy}r76 or newer on an SSE2-capable CPU.
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\1va(FF,FF,FF,FF)\org(()\clip(0,0,0,0))}You are using VSFilter\N{\fscy0},{\fscy}2.39.1688 to 2.41.6262,\N{\fscy0}.{\fscy}or threaded-VSFilter r113 or older.\NYour copy is outdated!
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(0,0,0,0)\iclip(0,0,0,,)}You are using xy-VSFilter\N{\1a&HFF&}.{\1a}20111025 to 3.0.0.44.\NYour copy is outdated!
+Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H009400&\fscx0.25\p1}m 0 0 l 153600 0 153600 288 0 288{\p0}
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(-192,144)\q2\clip(0,0,0,0)\iclip(0,0,0,,)\fscx0.25\p1}m 0 0 m 307200 0{\p0\fscx100\1a&HFF&},{\1a}You are using XySubFilter,\N{\fscx0.25\p1}m 0 0 m 307200 0{\p0\fscx100\1a&HFF&}.{\1a}or xy-VSFilter 3.0.0.45 or newer.
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(-192,144)\q2\org(()\clip(0,0,0,0))\lalala(\clip(0,0,0,0))\fscx0.25\p1}m 0 0 m 307200 0{\p0\fscx100}You are using MPC-HC 1.6.5.6263 to\N{\fscx0.25\p1}m 0 0 m 307200 0{\p0\fscx100\1a&HFF&},{\1a}1.7.1.307, the corresponding VSFilter,\N{\fscx0.25\p1}m 0 0 m 307200 0{\p0\fscx100\1a&HFF&}.{\1a}or threaded-VSFilter r114 or newer.{No "outdated" message and green background because this version is more correct than the newer one. (But both are bugged due to VSFilterMod.)}
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(0,0,0,0)\lalala(\iclip(0,0,0,0))}You are using MPC-HC 1.7.1.308 or\N{\1a&HFF&}.{\1a}newer, or the corresponding VSFilter.
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(-192,144)\q2\clip(0,0,0,0)\org(()\iclip(0,0,0,0))\clip(0,0,0,,)\fscx0.25\p1}m 0 0 m 307200 0{\p0\fscx100}You are using a variant of\N{\fscx0.25\p1}m 0 0 m 307200 0{\p0\fscx100\1a&HFF&}.{\1a}VSFilter newer than this file.
+Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\iclip(0,0,384,288)\p1}m 0 0 l 384 0 384 288 0 288{\p0}
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\iclip(0,0,384,288)\1a&HFF&}.{\1a}You are using VSFilter 2.38.\NYour copy is severely outdated!
+Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\iclip(0,0,384,288)\fax1\fay1\p1}m 0 0 l 384 0 384 288 0 288{\p0}
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\iclip(0,0,384,288)\fax1\fay1\k1001\kt0\k0\1a&HFF&}.{\1a}You are using VSFilter 2.37.\NYour copy is severely outdated!
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\kt1001\1a&HFF&}.{\1a}You are using VSFilter 2.36 or older.\NYour copy is severely outdated!
+; {\1a&HFF&}\{\1a&H00&}\N hides stuff from libass
+; \NYou should upgrade to xy-VSFilter.
+; You are using libass newer than this file.
+Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,288)\an1\c&H009400&\iclip(0,0,0,0)\clip(0,0,384,288)\1a&HFF&}\{\fscx0{\1a&H00&}\N{\p1}m 0 0 l 384 0 384 288 0 288{\p0}
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0{\1a&HFF(00)}\NYou are using libass newer than this file.
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\iclip(0,0,0,0)\clip(0,0,384,288)\1a&HFF&}\{\fscx0{\1a&H00(FF)}\NYou are using libass 0.10.2+ 84b14ca or newer.
+; Take care to hide the following two lines from Aegisub r2286.
+Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,288)\an1\c&H008484&\iclip(0,0,0,0)\clip(0,0,0,0)\1a&HFF&}\{\fscx0{\1a&H00&}\N{\p1}m 0 0 l 384 0 384 288 0 288{\p0}
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\iclip(0,0,0,0)\clip(0,0,0,0)\1a&HFF&}\{\fscx0{\1a&H00&}\NYou are using libass 0.10.2+ a7ccf59 to b3c2b31.\NYour copy is outdated!
+; From this point on, everything is so broken that hiding it from new libass automatically hides it from VSFilter.
+Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\1a&&FF&\p1}m 0 0 l 384 0 384 288 0 288{\p0}
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\1a&&FF&\iclip(0,0,0,0)\iclip(m 0 0 l 1 0 1 1 0 1)\iclip()}You are using libass 0.10.2+ 190fb1e.\NYour copy is outdated!
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(0,0,0,0)\clip(m 0 0 l 384 0 384 288 0 288)\clip()\fscx0\fsc\fscx100}You are using libass 0.10.2+ fc13f53 to 9f2ffc0.\NYour copy is outdated!
+; For all of the above, just putting \fsc immediately before each } should be enough to hide the lines from old libass.
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\fsc\fscx0}You are using libass 0.10.1+ 8d555a1 to 0.10.2+ c337e7a.\NYour copy is outdated!
+Dialogue: 0,0:00:00.00,0:00:10.00,Old,,0,0,0,,{\pos(192,144)\r404\clip0,0,0,0}You are using libass 0.10.1+ 5523d3d.\NYour copy is outdated!
+Dialogue: 0,0:00:00.00,0:00:10.00,Old,,0,0,0,,{\pos(192,144)\r*Old\clip0,0,0,0}You are using libass 0.10.1+ ed55e32 to b992975.\NYour copy is outdated!
+Dialogue: 0,0:00:00.00,0:00:10.00,Old,,0,0,0,,{\pos(192,144)\clip(0,0,0,0)\iclip0,0,0,0\1a&HFF&\t(0,0,\ \1a&H00&)}You are using libass 0.10.1+ 68c3268 or b55b225.\NYour copy is outdated!
+Dialogue: 0,0:00:00.00,0:00:10.00,Old,,0,0,0,,{\pos(192,144)\t(0,0,\ \1a&HFF&)}You are using libass 0.10.1+ 5c9efa1 to d29915d.\NYour copy is outdated!
+Dialogue: 0,0:00:00.00,9:59:59.99,Box,,0,0,0,,{\move(0,-576,0,0,-1,-1)\c&H0000FF&\p1}m 0 0 l 384 0 384 288 0 288{\p0}
+Dialogue: 0,0:00:00.00,9:59:59.99,Old,,0,0,0,,{\move(0,-576,192,144,-1,-1)}You are using libass 0.10.0+ 2ba3001 to 0.10.1+ 085666a.\NYour copy is outdated!
+; 340ff8f4cbde87d2ce7d1133889e3afdd66d4e06 to
+; 731e5a0503a8f430663032307244b2adde690777 to bbd6502caa2e6a023c863806c3aa63d7e3cf389d
+; 071e23b7f41382fc07d657699574b24827fa240d to 5903771ec9e6a1c6840a3f48fde3fe2bde932326
+; fb1109b4bdec040dab5cdb00a342557b977e9c12
+; (91b0e50da385723853969b2d3814b70d21a36077) to 62275969552280956d6555f89b9a46427868d6ac
+; to (7e4553211048d0cdf5f23fb7532e2d619f6edccb)
+;    ba0459b2a64ee2170c4c0e084633a57ec74dbfd0??
+;    c207000c7cdde335679b53a8cffc22bef61ffa45??
+; e6c71d8a94172a11a17518387ae5f3db540490c8 to
+; (758b15ecd437137bb9e794884fa8483430a0fee6) to b61d260b3e92a3fc4c0e054ad5b030182030f996
+; 7af78014635dbe81c3328405aa68dd2cfef94bc4 to (7af78014635dbe81c3328405aa68dd2cfef94bc4)
+; 31db1346d43e54e07bd563d8c9e6ffbdd195b84c
+; 2ba300123f7e6e5b9bbc69976ca4017993af694b to 6d2b7f238ec20a88d7ced4a513c6262a0b39d9ff
+Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\rHidden\c&H0000FF&\p1}m 0 0 l 384 0 384 288 0 288{\p0}
+Dialogue: 0,0:00:00.00,0:00:10.00,Old,,0,0,0,,{\pos(192,144)\rHidden}You are using libass 0.10.0+ 94b4c0d or older.\NYour copy is outdated!
+; when \fa*\fsc* broken => "severely outdated"
+
+; Dialogue: 9,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&HFFFFFF&\p1}m 0 0 l 384 0 384 288 0 288{\p0}
+; Dialogue: 9,0:00:00.00,0:00:01.00,Box,,0,0,0,,{\an5\c&HFFFFFF&\t(\clip(0,0,384,144)\c&HFF0000&\frz90}A quick brown fox jumps over the lazy dog.
+; Dialogue: 9,0:00:00.00,0:00:01.00,Box,,0,0,0,,{\an5\fs96\bord1\c&HFFFFFF&}{\blur10}\blur10\N{\blur0\blur(10)}\blur(10)
+; Dialogue: 9,0:00:00.00,0:00:01.00,Box,,0,0,0,,{\an5\fs96\bord0.333\c&HFFFFFF&}\blur10\N\blur(10)
