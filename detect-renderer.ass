@@ -8,7 +8,6 @@ YCbCr Matrix: None
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-; TODO: remove the margins? Some of the \q2 lines already don't fit in these margins.
 Style: Default,Arial,18,&HFF000000,&HFF00FFFF,&H00000000,&H00000000,-1,0,0,0,0,0,0,0,1,0,0,5,40,40,20,1
 Style: **Default,Arial,18,&H00000000,&HFF00FFFF,&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,0,0,5,40,40,20,1
 Style: White,Arial,18,&H00FFFFFF,&HFF00FFFF,&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,0,0,5,40,40,20,1
@@ -22,7 +21,7 @@ Style: Box,Arial,18,&H00000000,&H0000FFFF,&H00000000,&H00000000,-1,0,0,0,100,100
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ; \{libass and asa display a brace and this text. VSFilter displays a backslash and reads this text as a comment/override.}
 ; {VSFilter and libass 3199a87+ display a brace and this text. libass 0908a56- and asa display nothing and read this text as a comment/override.
-; Perian reads each brace group as either {\bunch\of\well-formed\tags\all\of\which\it\knows} or {comment}.
+; Perian reads each brace group as either {\bunch\of\well-formed\tags\all\of\which\it\knows} or {comment}. Or does it? This doesn't match what I'm seeing.
 ; Mainline VSFilter history:
 ; Guliverkli:
 ;   r8   2.24 1.0.0.0 initial commit
@@ -40,63 +39,141 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ;   r357 2.36 1.0.1.2 no subtitle changes
 ;   r453 2.37 1.0.1.3 ASS2, \kt, rectangle \clip when m_relativeTo == 1
 ; Aegisub:
-;  r1398 \fax \fay \pos(float) \org(float) \mov(float)  imported from somewhere  5d21970bbc9c63c928235ea1c62ac4127cc23100
-;  r2278 \xbord \ybord \xshad \yshad      https://github.com/Aegisub/Aegisub.git@13654219c26158e1d75cefc5467849686fdb22b3
-;  r2279 \beN \t(\be)                     https://github.com/Aegisub/Aegisub.git@5d3b1fe8c2cee5ff3bd861dae1839d5ed9bc947b <------ tadadada, the single most troublesome ASS commit ever
-;  r2284 \blur                            https://github.com/Aegisub/Aegisub.git@ea79951788b45bc31286c6ced85bc6608ae625d4 <------ runner-up
-;  r2286 \iclip(rectangle)                https://github.com/Aegisub/Aegisub.git@0e6dd47bf0546c548386a6bbbf85cc96e338f04d (\iclip(rect)\clip(rect) stays iclip)
-;  r2287 \iclip(vector)                   https://github.com/Aegisub/Aegisub.git@b5144d09a1458797cec3f34588add964c723e22e (\iclip(rect)\clip(rect) becomes clip)
+;  r1398 https://github.com/Aegisub/Aegisub.git@5d21970bbc9c63c928235ea1c62ac4127cc23100 \fax \fay \move(float) \org(float) \pos(float) (runs not split on \fax\fay changes) and some crash and pixmix fixes (imported from somewhere)
+;  r2276 https://github.com/Aegisub/Aegisub.git@c54cf755ac3447389803ddbd3fb984d3d1343b43 glyph fill excluded from outline always, even on \1a&H00&\2a&H00&\fad(...) which previously didn't exclude it
+;  r2278 https://github.com/Aegisub/Aegisub.git@13654219c26158e1d75cefc5467849686fdb22b3 \xbord \ybord \xshad \yshad (\xbord0\ybordX acts like \bord0), Banner effect position changed when \xbord != 0*, bord/shad scaling changed**
+;  r2279 https://github.com/Aegisub/Aegisub.git@5d3b1fe8c2cee5ff3bd861dae1839d5ed9bc947b \beN \t(\be) <------ tadadada, the single most troublesome ASS commit ever
+;  r2282 https://github.com/Aegisub/Aegisub.git@582dd39cbdcee6b55f5645a480599a17058a8985 fixed \xbord0\ybordX: can't detect this? can hide an older message but can't show a new message
+;  r2284 https://github.com/Aegisub/Aegisub.git@ea79951788b45bc31286c6ced85bc6608ae625d4 \blur        <------ runner-up
+; (r2285 https://github.com/Aegisub/Aegisub.git@94d3185170800f87cc7e0e70e84f50f8d1e569df glyph fill excluded from outline iff not \1a&H00&\2a&H00&\fad(inactive right now) (only a qualitative change) (although may be usable for pixel-perfect tests))
+;  r2286 https://github.com/Aegisub/Aegisub.git@0e6dd47bf0546c548386a6bbbf85cc96e338f04d \iclip(rectangle) (\iclip(rect)\clip(rect) stays iclip)
+;  r2287 https://github.com/Aegisub/Aegisub.git@b5144d09a1458797cec3f34588add964c723e22e \iclip(vector), \iclip(rect)\clip(rect) becomes clip
+;   ???  switched to Guliverkli2
+;  r2958 https://github.com/Aegisub/Aegisub.git@6eb7206aa3f8344517a7ae3f80779ca4b7fbe4a7 removed internal copy of VSFilter
+; *  Banner tries to move the border beyond the edge of the screen. the net effect is:
+;      left-to-right banner   left-aligned: exactly that (glyph moved by \xbord to the left)
+;      left-to-right banner center-aligned: glyph moved by half \xbord to the left
+;      left-to-right banner  right-aligned: no effect (glyph starts just beyond the edge of the screen)
+;      right-to-left banner   left-aligned: no effect (glyph starts just beyond the edge of the screen)
+;      right-to-left banner center-aligned: glyph moved by half \xbord to the right
+;      right-to-left banner  right-aligned: exactly that (glyph moved by \xbord to the right)
+; ** previously, \bord and \shad were scaled by (m_scalex+m_scaley)/2; now, \xblah and \yblah are scaled by mscalex and mscaley
 ; Guliverkli2: ({svn,http}://svn.code.sf.net/p/guliverkli2/code/)
 ;    r1  guliverkli r611
-;    r2  \fax \fay \pos(float) \org(float) \mov(float)  imported from somewhere
+;    r2  \fax \fay \move(float) \org(float) \pos(float) (runs not split on \fax\fay changes) (imported from somewhere)
 ;    r62 \beN \t(\be) \blur <------ the combined most troublesome ASS commit ever (notice how conveniently both leaders are compressed into a single commit!)
 ;    r63 \xbord \ybord \xshad \yshad
 ;    r64 \iclip
-; VSFilterMod: (https://code.google.com/p/vsfiltermod/) (omg, it's alive!)
-;    r2  everything?
-;    r11 (somewhat broken*) nested parentheses; \[1-4]img now takes decimal positions instead of hexadecimal
-;    r17 fixed parentheses; \[1-4]img position now optional
+; VSFilterMod: (https://code.google.com/p/vsfiltermod/)
+;    r2   everything (runs split on \fax\fay changes)
+;    r11  somewhat broken* nested parentheses, \[1-4]img now takes decimal positions instead of hexadecimal
+;    r17  fixed parentheses, \[1-4]img position now optional
 ;    ......
-;    r76 broke \fay (it's now a no-op) on SSE2-capable CPUs (missing "else") (when this is added to MPC-HC, it's mysteriousy fixed)
+;    r76  broke \fay (it's now a no-op) on SSE2-capable CPUs (missing "else") (when this is added to MPC-HC, it's mysteriousy fixed)
 ;    ......
-;    r87 fixed \fay
+;    r87  fixed \fay
 ;    ......
-;    r91 \lua \lualog
-;    ... Lua improvements
-; * the outermost closing parenthesis is included in the argument value,
-;   which affects argument splitting, \fn and \r
+;    r91  Lua, LuaLog headers: both file paths, Lua loads the file and calls init() if it is a function
+;    r92  \lua(funcname,arg1,arg2...) calls funcname(arg1,arg2...) which must return {style={bold=boolean}}
+;    r93  \lua disabled in \t, sends {time=,length=} as first arg, accepts booleans bold,italic,underline,strikeout, floats blur,be,frx,fry,frz,fax,fay,fsx,fsy,shadx,shady,bordx,bordy, integers a1,a2,a3,a4(&0xFF),c1,c2,c3,c4(&0xFFFFFF)
+;    r94  \lua accepts pos={x=float,y=float}
+;    r95  \blah(arg1,arg2...) acts like \lua(blah,arg1,arg2...) if blah is a Lua function (blah can mask built-in tags)
+;    r97  \lua accepts fscx,fscy instead of fsx,fsy, accepts fsc,shad,bord setting both x and y, accepts beforetransform=string,aftertransform=string,customtransform=string**
+;    r98  beforetransform and aftertransform applied even around customtransform
+;    r99  transforms are given layer=(1 for text, 3 for outline, 4 for shadow, 5 for opaque box, 6 for clip), id=int, user=(global "sub_%d" % id if it exists), \lua sends id= in first arg, enabled and sends animate=(coefficient) in first arg in \t, user=(global "sub_%d" % event id if it exists), accepts vcpos={x=float,y=float}, user=(stored in global "sub_%d" % event id), floats rndx,rndy,rndz,rnds,rnd,fsp,fvsp,frs (rnd sets rnd[xyz])
+;    r100 empty transform names ignored (transforms not unset), broke pixmix (wrong rounding? and SSE and non-SSE switched places)
+;    r101 fixed pixmix
+;    r102 \lua accepts clipstyle=string (TODO document), org={x=float,y=float}
+;    ...  Lua improvements
+;    r107 something about karaoke applying to outline and shadow (#ifdef _LUA)
+; *  the outermost closing parenthesis is included in the argument value,
+;    which affects empty trailing arguments, \fn and \r
+; ** if customtransform is set, it is called instead of built-in 3D transforms;
+;    otherwise beforetransform is called, then the built-in 3D transforms applied, then aftertransform called.
+;    calling: for every point in the outline, call function with given name with {minx=,maxx=,miny=,maxy=,frx=,fry=,frz=,fscx=,fscy=,fax=,fay=,size={w=,h=},pos={x=,y=,z=},org={x=,y=}} and accept {x=float,y=float}
 ; MPC-HC:
-;   2.39        https://github.com/mpc-hc/mpc-hc.git@3244957f4563575d22bf109de27a703558611b19 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@1688 MPC-HC 1.3.1688.0 VSFilterMod@20
-;   2.39        https://github.com/mpc-hc/mpc-hc.git@21c0cb78a588672ad4ce69f4d1c5b4cf60ba3ee9 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@1746 MPC-HC 1.3.1746.0 VSFilterMod@25 + fix
-;   2.40.1924.0 https://github.com/mpc-hc/mpc-hc.git@101e56669d1821d15a201c4b0812e5555ae8a6e2 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@1924 MPC-HC 1.3.1924.0 VSFilterMod@84
+;   2.37        https://github.com/mpc-hc/mpc-hc.git@0a1b11126125e4c1456673b31b25b2ed77d5f4a2 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@84                     \fax \fay (runs not split on changes) and some crash and pixmix fixes
+;   2.37        https://github.com/mpc-hc/mpc-hc.git@08e6f7c90b4c2d8ddd6cbe165ab883035a0b6abb https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@140                    outline drawn even if \bord0, "fix : opaque box overlapped"
+;   2.38        https://github.com/mpc-hc/mpc-hc.git@7c168f32ef65cb43adacceb4071aa503c382ce21 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@464                    Guliverkli2@58: \move(float) \org(float) \pos(float)
+;   2.39        https://github.com/mpc-hc/mpc-hc.git@19fb30b3effa1a8d221240ef42e47aaf8bf9e495 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@692                    Guliverkli2@68* + outline not drawn if \bord0, "fix : opaque box overlapped" removed
+;   2.39        https://github.com/mpc-hc/mpc-hc.git@3244957f4563575d22bf109de27a703558611b19 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@1688 MPC-HC 1.3.1688.0 VSFilterMod@20 including fix for \fax\fay run splitting
+;   2.39        https://github.com/mpc-hc/mpc-hc.git@21c0cb78a588672ad4ce69f4d1c5b4cf60ba3ee9 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@1746 MPC-HC 1.3.1746.0 VSFilterMod@25 + extra fix for something
+;   2.40.1924.0 https://github.com/mpc-hc/mpc-hc.git@101e56669d1821d15a201c4b0812e5555ae8a6e2 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@1924 MPC-HC 1.3.1924.0 VSFilterMod@84 with \fay on SSE2 fixed
+;               https://github.com/mpc-hc/mpc-hc.git@158e31fbcc38e59cba2451ad5a2bccf69ea697d1 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@1982                   crash when clip mask has negative width and/or height (wat)
+;               https://github.com/mpc-hc/mpc-hc.git@c3872d95719d8d861a91b876263b707a03292abb https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@2008                   crash fixed
+;               https://github.com/mpc-hc/mpc-hc.git@039daf85424e81631d840576e0e159757f1aba14 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@2128                   ignore drawing commands without enough preceding points (rather than crash)
+;               https://github.com/mpc-hc/mpc-hc.git@c154c5d76d52a4311a899aeeaebd9cbac5cbb822 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@3259                   CPolygon::Copy doesn't copy width, ascent, descent
+;               https://github.com/mpc-hc/mpc-hc.git@3392e0aae0e8bf7a1153e489a2a2e3dbfb469f6d https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@3270                   CPolygon::Copy copies width, ascent, descent again
+;               https://github.com/mpc-hc/mpc-hc.git@bd96d9168129cbab728094c5b5773486fb291635 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@3560                   words starting "m 0 0 l" not rendered, anything with either width or height > 3300px not rendered
+;               https://github.com/mpc-hc/mpc-hc.git@afd341e7291f3b9823fed7e33bdaebf885b907b1 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@3607                   words starting "m 0 0 l" rendered again
 ;   2.41.2.4483 https://github.com/mpc-hc/mpc-hc.git@3723d940106be42a4361cba18c91de62054103ab https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@4483 MPC-HC 1.6.2.4483 VSFilterMod mostly removed
-;   2.41.308    https://github.com/mpc-hc/mpc-hc.git@fca1d9d3fb6170c2e2379de235f3f39417683ddf                                                              MPC-HC 1.7.1.308  parser cache, lots of stuff broken*
-;   2.41.14     https://github.com/mpc-hc/mpc-hc.git@90577746cc7dbbff742129ceb36ae8e85f56c3e8                                                              MPC-HC 1.7.6.14   \fs- fixed
-;   2.41.24     https://github.com/mpc-hc/mpc-hc.git@4470846b0cf494ca8bbb404bf91351c8c95251b4                                                              MPC-HC 1.7.6.24   float in drawings: lround()ed to 26.6 fixed before scaling
+;   2.41.6263   https://github.com/mpc-hc/mpc-hc.git@de14ef44e6cab14350be937ccb9664fdfcfe29a9                                                              MPC-HC 1.6.5.6263 \fscx(float) \fscy(float)
+;               https://github.com/mpc-hc/mpc-hc.git@8f3d30412adad6bfa152c6ebf8738965bb79cf28                                                                                \frx\fry\frz converted to radians by multiplying by M_PI/180, z coordinate limit removed
+;   2.41.308    https://github.com/mpc-hc/mpc-hc.git@fca1d9d3fb6170c2e2379de235f3f39417683ddf                                                              MPC-HC 1.7.1.308  parser cache, broke lots of stuff**
+;   2.41.14     https://github.com/mpc-hc/mpc-hc.git@90577746cc7dbbff742129ceb36ae8e85f56c3e8                                                              MPC-HC 1.7.6.14   fixed \fs-
+;   2.41.24     https://github.com/mpc-hc/mpc-hc.git@4470846b0cf494ca8bbb404bf91351c8c95251b4                                                              MPC-HC 1.7.6.24   float in drawings: lround()ed to 26.6 before scaling
+;               https://github.com/mpc-hc/mpc-hc.git@c818580fc64a3e8cb7891e7dfca45231d5e7b85e                                                                                coordinates in drawings rounded after scaling
+;               https://github.com/mpc-hc/mpc-hc.git@dd44bd9d6260d9202d22fffa92f0d266f9d2d34f                                                              MPC-HC 1.7.6.36   coordinates in drawings and \pbo rounded to whole pixels after scaling
+;               https://github.com/mpc-hc/mpc-hc.git@11bb014771fcc1f73f4b92c06d29f0662fdda457                                                                                opaque boxes not double-scaled
+;               https://github.com/mpc-hc/mpc-hc.git@b20e86fad2a5d7729638d772a0a5cd144f9e7189                                                                                opaque boxes drawn even if \bord0
 ;   2.41.191    https://github.com/mpc-hc/mpc-hc.git@ec53662e33610c5c7504427dde3ce7de421d5cb4                                                              MPC-HC 1.7.6.191  drawing parser optimized and broken: /[mnlbspc]*/ immediately following /\S/ (used as cmd) is skipped
+;               https://github.com/mpc-hc/mpc-hc.git@a74db2a6c1b2e710afbd35abbe0c7271c9651b06                                                                                z coordinate limit readded (in display pixels)
+;               https://github.com/mpc-hc/mpc-hc.git@a8a5bed7a1ad8680987a82bfa3574cd7d0f963f1                                                                                YCbCr Matrix header
 ;   2.41.141    https://github.com/mpc-hc/mpc-hc.git@b7b2ee8af888639340494783edc5065d8379f797                                                              MPC-HC 1.7.8.141  drawing parser partially fixed: only /[mnlbspc]/ rather than /\S/ recognized as cmd, but /[mnlbspc]*/ still skipped
-; * unknown tags are now skipped before parentheses are parsed;
-;   inline and parenthesized arguments are now separated;
-;   \fs- now acts as \fs+;
-;   \t(literally nothing in parentheses) might be broken?
+; *  \beN \t(\be) \blur \iclip \xbord \ybord \xshad \yshad,
+;    glyph fill excluded from outline if \1a&H00&\2a&H00&\fad(active right now),
+;    Banner effect position changed when \xbord != 0,
+;    bord/shad scaling changed,
+;    \move(startpos=endpos) rounding errors eliminated,
+;    some pixmix fixes
+; ** unknown tags are now skipped before parentheses are parsed;
+;    inline and parenthesized arguments are now separated;
+;    alpha and color tags with a value consisting entirely of /^[&H]+$/ act as if they have a value of 0;
+;    \fs- now acts as \fs+;
+;    \fsN(+) and \fsN(-) now act as \fs+N (and \fs-N after \fs- is fixed);
+;    \t(literally nothing in parentheses) might be broken?
 ; Stuff still broken in MPC-HC because of VSFilterMod:
 ;   nested parentheses are supported (they shouldn't be)
 ;   \[1-4]a and \alpha values are &0xFF (they shouldn't be) https://code.google.com/p/xy-vsfilter/issues/detail?id=80
+;   embedded fonts do not end at lines beginning with '[' (they should) (or is this a good thing? xy-VSFilter and libass have this too)
 ; Stuff still broken in MPC-HC because speeeed:
-;   unknown tags should still skip the parenthesized arguments;
+;   unknown tags should still skip the parenthesized arguments
 ;   oh god dem single numeric arguments. they should be taken from the string argument array, not from cmd.Mid()
+;   alpha and color tags with a value consisting entirely of /^[&H]+$/ act as if they have a value of 0
+;   the last drawing command should be remembered, not the first in a series of consecutive commands
+; Stuff now broken in MPC-HC because this makes more sense rite:
+;   opaque boxes aren't double-scaled
+;   opaque boxes are rendered even when \bord0 (interesting: guliverkli actually had this case commented out!)
+; Stuff still broken in MPC-HC because it never got fixed from the time of guliverkli:
+;   \be(float) \fs(float) \kt(float) \kf(float) \K(float) \ko(float) \k(float)
+;   scaling of blur etc. through video resolution
+;   anamorphic correction for 3D transforms (libass does this! ha!)
+;   anamorphic correction for blur
 ; Threaded VSFilter:
-;   r2 forked from some revision of MPC-HC
-; xy-VSFilter:
-;   forked from Guliverkli2 r113 (despite r114, the last revision, being made less than two minutes later)
-;   3.0.0.45  https://github.com/Cyberbeing/xy-VSFilter.git@404301a33f40978526382e69777d9e6a864edd65 \be(float) \fscx(float) \fscy(float) \fs(float) \kt(float) \kf(float) \K(float) \ko(float) \k(float)
-;   3.1.0.738 https://github.com/Cyberbeing/xy-VSFilter.git@12c5a9efe0268afd7735b1af2218e276052b0519 MPC-HC tag parser including remnants of VSFilterMod
+;   r2   forked from some revision of MPC-HC
+;   r114 \be(float) \fscx(float) \fscy(float) \fs(float)
+; Stuff still broken in Threaded VSFilter because it never got fixed from the time of guliverkli:
+;   \kt(float) \kf(float) \K(float) \ko(float) \k(float)
+;   float in drawings
+; xy-VSFilter/XySubFilter:
+;   forked from Guliverkli2 r113 (despite r114, the last revision, being made less than two minutes later) er no, the first commit is not just that. it even has some VSFilterMod SSE code in it. the commit msg says "import from ... my personal repository"
+;  (20111003)           https://github.com/Cyberbeing/xy-VSFilter.git@50eda5f2c3ddd149097bf4ca68db0522b8b42589 runs split on \fax\fay changes, fixed false path data cache hits when only \fscx\fscy\frx\fry\frz\fax\fay differ, new false hits when they or \xbord\ybord differ by < 0.000001
+;  (20111009)           https://github.com/Cyberbeing/xy-VSFilter.git@eaf70dbe6c3756fd57788c9bb40686ddffb6e178 (if I am to believe the 2ea8ac6de08446f778aa599e48554d54b434f037 commit message) broke \frx\fry\frz when \shad != 0
+;  (20111025)           https://github.com/Cyberbeing/xy-VSFilter.git@9aad0c99aae8fcaec9f23572ecfd859a1f30bf09 broke comma-delimited arguments: \blah(blah,\s*,any,thing\follows) and \blah(blah\s+,any,thing\follows) get arguments `blah` and `,any,thing\follows` (possibly just `,`)
+;  (20111119)           https://github.com/Cyberbeing/xy-VSFilter.git@2ea8ac6de08446f778aa599e48554d54b434f037 fixed \frx\fry\frz when \shad != 0
+;   3.0.0.11            https://github.com/Cyberbeing/xy-VSFilter.git@7b1e5c6e3b390ca7f0a9803786f1369878f7ae94 float in drawings, ignore drawing commands without enough preceding points (rather than crash)
+;   3.0.0.45            https://github.com/Cyberbeing/xy-VSFilter.git@404301a33f40978526382e69777d9e6a864edd65 \be(float) \fscx(float) \fscy(float) \fs(float) \kt(float) \kf(float) \K(float) \ko(float) \k(float), \clip(float+0.5) \iclip(float+0.5)
+;   3.0.0.301 3.1.0.698                                                                                        fixed comma-delimited arguments
+;             3.1.0.738 https://github.com/Cyberbeing/xy-VSFilter.git@12c5a9efe0268afd7735b1af2218e276052b0519 MPC-HC tag parser including remnants of VSFilterMod, \rblah acts as \r, \r looks up a style with an empty name
+;             3.1.0.746 https://github.com/Cyberbeing/xy-VSFilter.git@e67b464d9e992489bfb57ffa48ab9bddc5a43f97 fixed \r
 ; Version number history (mainly MPC-HC):
 ; major version, version in the filter property dialogue, version in the resource file embedded in the DLL
 ;   2.37 2.37 1.0.1.3   guliverkli@453
 ;   2.38 2.38 1.0.1.4   Guliverkli2@2
+;        2.38 1.0.1.4   https://github.com/mpc-hc/mpc-hc.git@b271b75623e1034b309bd8402d5a577fb0ab9b06 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@349
+;        2.38 1.1.604.0 https://github.com/mpc-hc/mpc-hc.git@ed928975f3dc8f3f13cd78a48aa2e157f8b5f03c https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@610
 ;   2.39 2.39 1.0.1.5   Guliverkli2@67
-;        2.39 1.0.1.5   https://github.com/mpc-hc/mpc-hc.git@19fb30b3effa1a8d221240ef42e47aaf8bf9e495 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@692 (combines Guliverkli2@58-68)
+;        2.39 1.0.1.5   https://github.com/mpc-hc/mpc-hc.git@19fb30b3effa1a8d221240ef42e47aaf8bf9e495 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@692 (merges Guliverkli2@68)
 ;        2.39 1.1.604.0 https://github.com/mpc-hc/mpc-hc.git@aebfddb159555e132fb434e689321fef5689c4b6 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@694
 ;        2.39 1.1.714.0 https://github.com/mpc-hc/mpc-hc.git@3d4853aa593f0790fe91958a822552727403c829 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@722
 ;        2.39 1.2.0.0   https://github.com/mpc-hc/mpc-hc.git@9a174874a81309d5f3cc307245c0c15730c81b06 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@933
@@ -118,33 +195,59 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ;        2.41.Xxx                                                                                                                                               MPC-HC 1.7.?.Xxx
 ; (Xxx = from 1 to 3 figures)
 ; * CCCP styles these as 2.40.YYYY.X. (CCCP switched to xy-VSFilter before MPC-HC VSFilter's version number reached 2.41.)
-; TODO: add details on:
-;   \fax\fay run splitting bug;
-;   \fscx(float)\fscy(float);
-;   \fs(float);
-;   \p > 1;
-;   float in vector drawings;
-;   noncrashing on drawing commands without enough preceding points;
-;   xy-VSFilter bugs distinguished below.
+; The Aegisub commits of interest have version numbers between version X and version X+1 styled as "X release preview" or "X pre-release", not "X+1 release preview".
+; Aegisub used to contain the following comment:
+;   2.38-0611 is base svn 611
+;   2.38-0611-1 is with clipfix and fax/fay patch
+;   2.38-0611-2 adds CSRI
+;   2.38-0611-3 fixes a bug in CSRI and adds fontcrash-fix and float-pos
+;   2.38-0611-4 fixes be1-dots and ugly-fade bugs and adds xbord/ybord/xshad/yshad/blur tags and extends be
+;   2.39 merges with guliverkli2 fork
 ; TODO: "VSFilter" vs "DirectVobSub"?
-; TODO: asa, old VLC, ffdshow, Subtitler, TextSub (?)
+; TODO: libjass, ASS.js, asa, old VLC, ffdshow, Subtitler, TextSub?
 ; TODO: try to fix this: VSFilter 2.39 and older are so slow they don't render anything at all until many seconds in if ever
-;       (and this probably keeps getting worse as I keep adding lines). \fay200 is the biggest (but not only) offender.
+;      (and this probably keeps getting worse as I keep adding lines). \fay200 is the biggest (but not only) offender.
+;    ...Or is it? Now it's rather snappy again even with the \fay200 in. I have no idea what's going on.
+;       And now the \fay200 is causing xy-VSFilter 20111030 and 20111119 and threaded-VSFilter 07272012 to crash! What.
+;       And now it's crashing VSFilter 2.39.
+;       Maybe it depends on the amount of free RAM?
+;       Well, I've now hidden the \fay200 from everything that doesn't have VSFilterMod r11 code in it.
 ; TODO: 09:05:04 < lachs0r> older vsfilter had nice bugs like \blur doing nothing when the lines weren't sorted by start time
+; TODO: investigate the various pixmix fixes
+; More quirks:
+;  * It seems VSFilter keeps reusing /,[^,]*$/ as the next field when parsing Style, Dialogue etc. lines if there are not enough fields.
+;  * VSFilter appears to create opaque box borders using its own polygon parser. Which can be overflown. Is this interesting?
+;  * VSFilter automatically renames duplicate style definitions.
+;  * VSFilter, except MPC-HC, converts degrees to radians by multiplying by 3.1415/180. (MPC-HC and libass multiply by M_PI/180.)
+;  * VSFilter still read \pbo as an integer. (libass supports \pbo(float).)
+;  * \t(t1,t2,tags) accepts (int)float, while \t(t1,t2,accel,tags) accepts only integers.
+;  * In SSA styles, VSFilter applies alpha to OutlineColour (which is copied from ShadowColour) but not to ShadowColour.
+;  * VSFilter skips commas when looking for colons when parsing timestamps.
+;  * VSFilter seems to ignore Effect if the dialogue starts with the exact same text.
+;    Oh, lol, this is probably meant as "if there is no effect field, don't parse the dialogue as the effect" (see the first quirk).
+;  * VSFilter supports HTML tags.
+;  * Does VSFilter, at least MPC-HC, crash on <tag attr="lol> (with an unpaired quotation mark)?
 Dialogue: 0,0:00:00.00,9:59:59.99,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\fscx4000\fscy4000}█{Perian ignores ASS vector drawings and mishandles the video this script comes with in various mysterious ways.}
 ; Perian deletes at most one leading asterisk from the style name in style definitions (and none in Dialogue lines),
 ; so this could be *Default, but that makes VSFilter 2.28 and older dereference NULL and display nothing.
 Dialogue: 0,0:00:00.00,9:59:59.99,Perian,,0,0,0,,{\pos(192,144)\1a&HFF&}.{\1a&H00&}You are using Perian.\NIts support for styled\N{\1a&HFF&}.{\1a&H00&}subtitles is very limited.{But the code seems quite nice.}
 Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\p1}m 0 0 l 384 0 384 288 0 288{\p0}
-Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\iclip(0,0,0,0)\clip(0,0,0,0)}You are using Aegisub v2.1.2\N{\1a&HFF&}.{\1a}release preview SVN r2286.\NYour copy is severely outdated!{Because I can.}
-; Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\iclip(0,0,384,288)\org(()\clip(0,0,384,288)}\h{\fax1\fay1}You are using VSFilter{\fax0\fay0}\h\N{\1a&HFF&}.{\1a}\h{\fax1\fay1}2.39 to 2.39.1687.{\fax0\fay0}\h\N\h{\fax1\fay1}Your copy is outdated!\h
-Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\iclip(0,0,384,288)\org(()\clip(0,0,384,288)\1a&HFF&}.{\1a}\h{\fax1\fay1}You are using VSFilter 2.39.{\fax0\fay0}\h\N\h{\fax1\fay1}Your copy is outdated!\h
-Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(0,0,0,0)\org(()\clip(0,0,384,288)\clip(0,0,0,,)\fax1\fay1}\h{\fax0\fay0}You are using xy-VSFilter{\fax1\fay1}\h\N.{\fax0\fay0}20111003 to 20111024.{\fax1\fay1}\N\h{\fax0\fay0}Your copy is outdated!\h
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\iclip(0,0,0,0)\clip(0,0,0,0)}You are using Aegisub v2.1.2\N{\1a&HFF&}.{\1a}release preview SVN r2286.\NYour copy is severely outdated!
+; TODO: mention Aegisub r2287 to xxx and Guliverkli2 r64 to r66 in this line?
+; Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\iclip(0,0,384,288)\clip(0,0,384,288)}\h{\fax1\fay1}You are using VSFilter{\fax0\fay0}\h\N{\1a&HFF&}.{\1a}\h{\fax1\fay1}2.39 to 2.39.1687.{\fax0\fay0}\h\N\h{\fax1\fay1}Your copy is outdated!\h
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\iclip(0,0,384,288)\clip(0,0,384,288)\1a&HFF&}.{\1a}\h{\fax1\fay1}You are using VSFilter 2.39.{\fax0\fay0}\h\N\h{\fax1\fay1}Your copy is outdated!\h
+; TODO: split on 20111009
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\1va(FF,FF,FF,FF)\clip(0,0,0,0)\org(()\iclip(0,0,0,0,))\fax1\fay1}\h{\fax0\fay0}You are using xy-VSFilter{\fax1\fay1}\h\N.{\fax0\fay0}20111003 to 20111024.{\fax1\fay1}\N\h{\fax0\fay0}Your copy is outdated!\h
 ; TODO: add a message telling the user to stay away from VSFilterMod unless they know what they're doing
-Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\1a&HFF&\1va(0,0,0,0)\fscx100()}You are using VSFilterMod.{red background}
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\1a&HFF&\org(()\1va(0,0,0,0))}You are using VSFilterMod r10 or older.\NYour copy is outdated!{Even though for the purpose of rendering proper SSA/ASS/ASS2, it is more correct than the later versions.}
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\1a&HFF&\1va(0,0,0,)\fscy0}.{\fscy}You are using VSFilterMod r11 to r16.\NYour copy is outdated!
-Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&HFF0000&}{with gradient activated, VSFilterMod treats colors as RGB rather than BGR}{\1a&HFF&\1va(0,0,0,0)\fay200\p1}m 0 0 l 384 0 384 288 0 288{\p0}
-Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\1a&HFF&\1va(0,0,0,0)\fay200}You are using VSFilterMod 1.1 SVN\N{\fscy0}.{\fscy}r76 to r86 on an SSE2-capable CPU.\NYour copy is outdated!
+; Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\1a&HFF&\1va(0,0,0,0)\fscx100()\org(()\clip(0,0,0,0))\fscy0}.{\fscy}You are using VSFilterMod r17 to r91.{Red background.}
+; Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\1a&HFF&\1va(0,0,0,0)\fscx100()\org(()\clip(0,0,0,0))\lua(funcname,param1,param2)\fscy0}.{\fscy}You are using VSFilterMod r92 or newer.{Red background.}
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\1a&HFF&\1va(0,0,0,0)\fscx100()\org(()\clip(0,0,0,0))\fscy0}.{\fscy}You are using VSFilterMod r17 or newer.{Red background.}
+; Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&HFF0000&}{with gradient activated, VSFilterMod treats colors as RGB rather than BGR}{\1a&HFF&\1va(0,0,0,0)\fay200\p1}m 0 0 l 384 0 384 288 0 288{\p0}
+Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\fay200\org(()\fay0\fscx0)\p1}m 0 0 l 384 0 384 288 0 288{\p0}
+; Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\1a&HFF&\1va(0,0,0,0)\fay200}You are using VSFilterMod 1.1 SVN\N{\fscy0}.{\fscy}r76 to r86 on an SSE2-capable CPU.\NYour copy is outdated!
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\fay200\org(()\fay0\fscx0)}You are using VSFilterMod 1.1 SVN\N{\fscy0}.{\fscy}r76 to r86 on an SSE2-capable CPU.\NYour copy is outdated!
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\1va(FF,FF,FF,FF)\org(()\clip(0,0,0,0))\lalala(\clip(0,0,0,0))}You are using VSFilter\N{\fscy0},{\fscy}2.39.1688 to 2.41.6262,\N{\fscy0}.{\fscy}or threaded-VSFilter r113 or older.\NYour copy is outdated!
 ; Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(0,0,0,0)\iclip(0,0,0,,)}You are using xy-VSFilter\N{\1a&HFF&}.{\1a}20111025 to 3.0.0.44.\NYour copy is outdated!
 ; With the Double Resolution feature enabled, as it is by default, the following set of lines:
@@ -154,44 +257,56 @@ Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\1va(FF,FF,FF,FF
 ; Build 20111223 removes the feature.
 ; TODO: use a bigger script resolution to avoid triggering this bug.
 ;       Although the user can configure a bigger resolution in the Double Resolution settings...
-; TODO: what about hanging punctuation in these lines? If it's already factored in, add a comment.
+; TODO: I *think* hanging punctuation is already factored into these positions. Not sure why I did it. Why not just do it like everywhere else?
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\clip(0,0,0,0)\iclip(0,0,0,,)\an7\shad271.529\fax-1\fay1\fscx71\fscy71\frz45\pos(94.011,117)}You are using xy-VSFilter
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\clip(0,0,0,0)\iclip(0,0,0,,)\an7\shad271.529\fax-1\fay1\fscx71\fscy71\frz45\pos(107.899,135)}20111025 to 20111118.
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\clip(0,0,0,0)\iclip(0,0,0,,)\an7\shad271.529\fax-1\fay1\fscx71\fscy71\frz45\pos(104.366,153)}Your copy is outdated!
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\clip(0,0,0,0)\iclip(0,0,0,,)\an7\shad271.529\fax-1\fay1\fscx71\fscy71\frz45\pos(-18.442,388.529)}You are using xy-VSFilter
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\clip(0,0,0,0)\iclip(0,0,0,,)\an7\shad271.529\fax-1\fay1\fscx71\fscy71\frz45\pos(2.189,406.529)}20111119 to 3.0.0.44.
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\clip(0,0,0,0)\iclip(0,0,0,,)\an7\shad271.529\fax-1\fay1\fscx71\fscy71\frz45\pos(-8.09,424.529)}Your copy is outdated!
+Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\fscx0.25\lalala(\clip(0,0,0,0))\p1}m 0 0 l 153600 0 153600 288 0 288{\p0}
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,-144)\clip(0,0,0,0)\iclip(0,0,0,,)\fscy0.25\p1}m 0 0 m 0 230400{\p0\fscy100}\NYou are using xy-VSFilter 3.0.0.45 to\N3.0.0.300, or XySubFilter 3.1.0.697{ (both in trunk and in release branches)}\Nor older{, or CCCP xy-VSFilter 3.0.0.307 (2014-12-25-beta) or older}. Your copy is outdated!
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\rHidden}You are using XySubFilter\N{\1a&HFF&}.{\1a}3.1.0.738 to 3.1.0.745.\NYour copy is outdated!
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,-144)\org(()\clip(0,0,0,0))\lalala(\clip(0,0,0,0))\fscy0.25\p1}m 0 0 m 0 230400{\p0\fscy100}\NYou are using MPC-HC 1.6.5.6263 to\N{\1a&HFF&},{\1a}1.7.1.307, the corresponding VSFilter,\N{\1a&HFF&}.{\1a}or threaded-VSFilter r114 or newer.\NYour copy is outdated!
+; Take care to hide this line from VSFilter 2.39, which doesn't support \fs(float).
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\fs9.0078125\fs-9.982653946227233\clip(0,0,0,0)\lalala(\iclip(0,0,0,0))}You are using MPC-HC 1.7.1.308 to\N{\1a&HFF&}.{\1a}1.7.6.13, or the corresponding VSFilter.\NYour copy is outdated!
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,117)\an8\fs720\fs-9.75\clip(0,0,0,0)\lalala(\iclip(0,0,0,0))\iclip(m 0 0 l 384.0 0 384 288 0 288)}You are using MPC-HC 1.7.6.14 to\N{\1a&HFF&}.{\1a}1.7.6.23, or the corresponding VSFilter.\NYour copy is outdated!
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(m 0 0 l 384 0 !l 0 0 l 384 288 !l 0 0 l 0 288)}You are using MPC-HC 1.7.6.191 to\N{\1a&HFF&}.{\1a}1.7.8.140, or the corresponding VSFilter.\NYour copy is outdated!
-Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\fscx0.25\lalala(\clip(m !m 0 0 l 384.0 0 384 288 0 288))\p1}m 0 0 l 153600 0 153600 288 0 288{\p0}
-Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(-192,144)\q2\clip(0,0,0,0)\iclip(0,0,0,,)\fscx0.25\p1}m 0 0 m 307200 0{\p0\fscx100\1a&HFF&},{\1a}You are using XySubFilter 3.1.0.697 or older,\N{\fscx0.25\p1}m 0 0 m 307200 0{\p0\fscx100\1a&HFF&}.{\1a}or xy-VSFilter 3.0.0.45 to 3.0.0.300{, or CCCP xy-VSFilter 3.0.0.307 (2014-12-25-beta) or older}.\N{\fscx0.25\p1}m 0 0 m 307200 0{\p0\fscx100}Your copy is outdated!
-; Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,-171)\an8\q2\clip(0,0,0,0)\iclip(0,0,0,,)\fscy0.25\p1}m 0 0 m 0 115200{\p0\fscy100}\N{\1a&HFF&},{\1a}You are using XySubFilter 3.1.0.697 or older,\N{\1a&HFF&}.{\1a}or xy-VSFilter 3.0.0.45 to 3.0.0.300{, or CCCP xy-VSFilter 3.0.0.307 (2014-12-25-beta) or older}.\NYour copy is outdated!
-Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,-144)\q2\clip(0,0,0,0)\iclip(0,0,0,,)\fscy0.25\p1}m 0 0 m 0 230400{\p0\fscy100}\N{\1a&HFF&},{\1a}You are using XySubFilter 3.1.0.697 or older,\N{\1a&HFF&}.{\1a}or xy-VSFilter 3.0.0.45 to 3.0.0.300{, or CCCP xy-VSFilter 3.0.0.307 (2014-12-25-beta) or older}.\NYour copy is outdated!
-Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H009400&\fscx0.25\clip(0,0,0,,)\lalala(\clip(m !m 0 0 l 384.0 0 384 288 0 288))\p1}m 0 0 l 153600 0 153600 288 0 288{\p0}
+Dialogue: 0,0:00:00.00,0:00:10.00,Hidden,,0,0,0,,{\pos(192,144)\rBox\c&H009400&\clip(0,0,0,,)\clip(m !m 0 0 l 384.0 0 384 288 0 288)\p1}m 0 0 l 384 0 384 288 0 288{\p0}
 ; TODO: distinguish xy-VSFilter without support for float in drawings
-; TODO: write "xy-VSFilter or XySubFilter" or something to that effect
+; TODO: write "xy-VSFilter or XySubFilter" or something to that effect? No, apparently Cyberbeing's official POV is that 3.1 is XySubFilter and 3.0 is xy-VSFilter.
 ; TODO: find a way to distinguish XySubFilter
-; This version of XySubFilter should be marked as outdated soon,
-; while for xy-VSFilter, this is the latest public version.
 ; I think I can use overlong UTF-8 encodings to pick out XySubFilter,
 ; but that will only work when detect-renderer.ass is an external script.
 ; In internal scripts, the distinction only exists for the header (if at all),
 ; because events are decoded using standard Win32 API functions.
 ; TODO: use &H008484& background for latest-but-incorrect xy-VSFilter, XySubFilter and MPC-HC?
-; Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(-192,144)\q2\clip(0,0,0,0)\org(()\iclip(0,0,0,0))\clip(0,0,0,,)\fscx0.25\p1}m 0 0 m 307200 0{\p0\fscx100}You are using XySubFilter 3.1.0.698\N{\fscx0.25\p1}m 0 0 m 307200 0{\p0\fscx100\1a&HFF&},{\1a}to 3.1.0.737, xy-VSFilter 3.0.0.301 or newer,\N{\fscx0.25\p1}m 0 0 m 307200 0{\p0\fscx100\1a&HFF&}.{\1a}or a variant of VSFilter newer than this file.{Green background and no "outdated" message for XySubFilter (even if I could distinguish it) because this version is more correct than the newer one. This version is perfectly correct. (Which is why I can't distinguish it!)}
-Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(-192,144)\q2\clip(0,0,0,0)\org(()\iclip(0,0,0,0))\clip(0,0,0,,)\fscy0.25\p1}m 0 0 m 0 153600{\p0\fscx100}You are using XySubFilter 3.1.0.698\N{\fscx0.25\p1}m 0 0 m 307200 0{\p0\fscx100\1a&HFF&},{\1a}to 3.1.0.737, xy-VSFilter 3.0.0.301 or newer,\N{\fscx0.25\p1}m 0 0 m 307200 0{\p0\fscx100\1a&HFF&}.{\1a}or a variant of VSFilter newer than this file.{Green background and no "outdated" message for XySubFilter (even if I could distinguish it) because this version is more correct than the newer one. This version is perfectly correct. (Which is why I can't distinguish it!)}
-; TODO: make this line red, because float in drawings is prolly more important than this
-Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(-192,144)\q2\org(()\clip(0,0,0,0))\lalala(\clip(0,0,0,0))\fscx0.25\p1}m 0 0 m 307200 0{\p0\fscx100}You are using MPC-HC 1.6.5.6263 to\N{\fscx0.25\p1}m 0 0 m 307200 0{\p0\fscx100\1a&HFF&},{\1a}1.7.1.307, the corresponding VSFilter,\N{\fscx0.25\p1}m 0 0 m 307200 0{\p0\fscx100\1a&HFF&}.{\1a}or threaded-VSFilter r114 or newer.{Green background and no "outdated" message because this version is more correct than the newer one. (But both are bugged due to VSFilterMod.)}
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,-144)\clip(0,0,0,0)\org(()\iclip(0,0,0,0))\clip(0,0,0,,)\fscy0.25\p1}m 0 0 m 0 230400{\p0\fscy100}\NYou are using xy-VSFilter 3.0.0.301\Nor newer, XySubFilter 3.1.0.698\Nto 3.1.0.737, or a variant of VSFilter\N{\1a&HFF&}.{\1a}newer than this file.{Green background and no "outdated" message for XySubFilter (even if I could distinguish it) because this version is more correct than the newer one. This version is perfectly correct. (Which is why I can't distinguish it!)}
+; Dialogue: 0,0:00:00.00,0:00:10.00,Hidden,,0,0,0,,{\pos(192,144)\rDefault\clip(0,0,0,0)\lalala(\iclip(0,0,0,0))\clip(m lm 0 0 l 384.0 0 384 288 0 288)\fscy3686400\p1}m 0 0 m 0.01{\p0\fscy100}\NYou are using XySubFilter\N{\1a&HFF&}.{\1a}3.1.0.746 or newer.
+; MPC-HC scales from script to display resolution before rounding, so make sure these are rounded up at as high display resolutions as possible by specifying nextafter(rounded_up, 0).
+; Everyone else rounds before scaling.
+; Dialogue: 0,0:00:00.00,0:00:10.00,Hidden,,0,0,0,,{\pos(192,-144)\rDefault\lalala(\fscy3686400\p1)}m 0 0 m 0 0.031249999999999997{\p0\fscy100}\NYou are using XySubFilter\N{\1a&HFF&}.{\1a}3.1.0.746 or newer.
+; Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,-144)\lalala(\fscy3686400\p1)}lm 0 0 lm 0 0.015624999999999998{\p0\fscy100}\NYou are using MPC-HC\N{\1a&HFF&},{\1a}1.7.6.24 to 1.7.6.190{35}{ or to .190 with the display height a multiple of 28*64=18432 pixels},\N{\1a&HFF&}.{\1a}or the corresponding VSFilter.{Green background and no "outdated" message because this version is more correct than the newer one. (But both are bugged due to VSFilterMod and the new tag parser.)}
+Dialogue: 0,0:00:00.00,0:00:10.00,Hidden,,0,0,0,,{\pos(192,108)\an8\rDefault\org(()\clip(0,0,0,0))\fs1440\fs-0.9875e1)}You are using XySubFilter\N{\1a&HFF&},{\1a}3.1.0.746 or newer,\Nor MPC-HC newer than this file\N{\1a&HFF&}.{\1a}or the corresponding VSFilter.
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,117)\an8\org(()\clip(0,0,0,0))\fs0.1422e4\clip(m lm 0 0 l 384.0 0 384 288 0 288)}You are using MPC-HC\N{\1a&HFF&},{\1a}1.7.6.24 to 1.7.6.190,\N{\1a&HFF&}.{\1a}or the corresponding VSFilter.{Green background and no "outdated" message because this version is more correct than the newer one. (But both are bugged due to VSFilterMod and the new tag parser.)}
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(m 0 0 !ln 384 0 384 288 0 288)}You are using MPC-HC 1.7.8.141 or\N{\1a&HFF&}.{\1a}newer, or the corresponding VSFilter.
-; TODO: maybe split this by showing the two messages in different positions on screen
-; and hiding the inappropriate one. Another option is to use a very small PlayResY.
-; MPC-HC rounds drawing coordinates times 64; xy-VSFilter and libass truncate them.
-Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,-162)\an8\clip(0,0,0,0)\lalala(\iclip(0,0,0,0))\clip(m lm 0 0 l 384.0 0 384 288 0 288)\fscy1843200\p1}m 0 0 m 0 0.01{\p0\fscy100}\NYou are using MPC-HC 1.7.6.24 to\N{\1a&HFF&}.{\1a}1.7.6.190, or the corresponding VSFilter.{Green background and no "outdated" message because this version is more correct than the newer one. (But both are bugged due to VSFilterMod and the new tag parser.)}
-Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,126)\an8\clip(0,0,0,0)\lalala(\iclip(0,0,0,0))\clip(m lm 0 0 l 384.0 0 384 288 0 288)\fscy1843200\p1}m 0 0 m 0.01{\p0\fscy100}\NYou are using XySubFilter\N{\1a&HFF&}.{\1a}3.1.0.738 or newer.
-; TODO: maybe distinguish MPC-HC versions that don't double-scale opaque boxes in the same way
+; TODO: maybe distinguish MPC-HC versions that don't double-scale opaque boxes by showing
+;       the two messages in different positions on screen and hiding the inappropriate one
 Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\iclip(0,0,384,288)\p1}m 0 0 l 384 0 384 288 0 288{\p0}
-Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\iclip(0,0,384,288)\1a&HFF&}.{\1a}You are using VSFilter 2.38.\NYour copy is severely outdated!
+; Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\iclip(0,0,384,288)\1a&HFF&}.{\1a}You are using VSFilter 2.38.\NYour copy is severely outdated!
+; TODO: check line wrapping
+; When editing these lines, make sure to edit all copies of each line simultaneously.
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\iclip(0,0,384,288)}You are using Aegisub v2.1.2\Nrelease preview SVN r2284\N{\1a&HFF&}.{\1a}or r2285, or Guliverkli2 r63.\NYour copy is severely outdated!
+; These lines don't require the iclip, but I'm keeping it to ensure minimum visible noise in newer VSFilters
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(-192,-144)\iclip(0,0,384,288)\xshad384\yshad288\blur128\bord1\4c&H0000FF&}You are using Aegisub v2.1.2\Nrelease preview SVN r2284\N{\1a&HFF&}.{\1a}or r2285, or Guliverkli2 r63.\NYour copy is severely outdated!
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(-192,-144)\iclip(0,0,384,288)\xshad384\yshad288\blur128}You are using Aegisub v2.1.2\N{\4a&HFF&}.{\4a}release preview SVN r2279 to r2283.\NYour copy is severely outdated!
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(-192,-144)\iclip(0,0,384,288)\xshad384\yshad288\be128\bord1\4c&H0000FF&}You are using Aegisub v2.1.2\N{\4a&HFF&}.{\4a}release preview SVN r2279 to r2283.\NYour copy is severely outdated!
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(-192,-144)\iclip(0,0,384,288)\xshad384\yshad288\be128}You are using Aegisub v2.1.2\N{\4a&HFF&}.{\4a}release preview SVN r2278.\NYour copy is severely outdated!
+Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(-384,-384)\4c&H0000FF&\shad384\xshad0\yshad0\p1}m 0 0 l 384 0 384 288 0 288{\p0}
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(-192,-240)\shad384\xshad0\yshad0\4a&HFF&}.{\4a}You are using Guliverkli2 r62.\NYour copy is severely outdated!
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(-192,-240)\shad384\xshad0\yshad0\be128\bord1\4c&H0000FF&\4a&HFF&}.{\4a}You are using Guliverkli2 r62.\NYour copy is severely outdated!
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(-192,-240)\shad384\xshad0\yshad0\be128\4a&HFF&},{\4a}You are using Aegisub v2.00 pre-release SVN r1398 to v2.1.2 release preview SVN r2277,\N{\4a&HFF&}.{\4a}or Guliverkli2 r2 to r61.\NYour copy is severely outdated!
+; Take care to hide these lines from VSFilterMod r76 to r86 with SSE2.
 Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\iclip(0,0,384,288)\fax1\fay1\p1}m 0 0 l 384 0 384 288 0 288{\p0}
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\iclip(0,0,384,288)\fax1\fay1\k1001\kt0\k0\1a&HFF&}.{\1a}You are using VSFilter 2.37.\NYour copy is severely outdated!
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\kt1001\1a&HFF&}.{\1a}You are using VSFilter 2.36 or older.\NYour copy is severely outdated!
@@ -202,9 +317,9 @@ Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,288)\an1\c&H009400&\1a&HFF
 ; Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\an7\shad271.529\fax-1\fay1\fscx70.711\fscy70.711\frz45\pos(11.318,397.529)}You are using libass
 ; Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\an7\shad271.529\fax-1\fay1\fscx70.711\fscy70.711\frz45\pos(6.552,415.529)}newer than this file.
 ; 3bbd058 can be distinguished if (int32_t)(uint32_t)-1 is assumed to be well-defined
-Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0{\1a&HFF&}\N.{\1a&hFF&}You are using libass 0.12.2+ 36db47b or newer.
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0}\N.{\1a&hFF&}You are using libass 0.12.2+ 36db47b or newer.
 ; \p1 comes before the broken \1a to make sure Perian sees the \p1 and doesn't try to render this line
-; I used to have &H008484& here for... what, "outdated but not outdated enough to be red"? why?
+; I used to have &H008484& here for... what, "outdated but not outdated enough to be red"? Why?
 Dialogue: 0,0:00:00.00,00:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\p1\1a&HHFF&}m 0 0 l 384 0 384 288 0 288{\p0}
 ; TODO: hanging punctuation in all following lines
 ; e5b86309cf3117cb0a3a4523ae42d483c5356f15/5c3ed3e6feb6e15179d1bc9599cb15150fa07bff
@@ -254,7 +369,8 @@ Dialogue: 0,0:00:00.00,9:59:59.99,Old,,0,0,0,,{\move(0,-576,192,144,-1,-1)}You a
 ; 7af78014635dbe81c3328405aa68dd2cfef94bc4 to (7af78014635dbe81c3328405aa68dd2cfef94bc4)
 ; 31db1346d43e54e07bd563d8c9e6ffbdd195b84c
 ; 2ba300123f7e6e5b9bbc69976ca4017993af694b to 6d2b7f238ec20a88d7ced4a513c6262a0b39d9ff
-Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\rHidden\c&H0000FF&\p1}m 0 0 l 384 0 384 288 0 288{\p0}
+; Take care to hide the following two lines from XySubFilter 3.1.0.738 to 3.1.0.745.
+Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\rHidden\c&H0000FF&\1a&&FF&\p1}m 0 0 l 384 0 384 288 0 288{\p0}
 Dialogue: 0,0:00:00.00,0:00:10.00,Old,,0,0,0,,{\pos(192,144)\rHidden}You are using libass 0.10.0+ 94b4c0d or older.\NYour copy is outdated!
 ; when \fa*\fsc* broken => "severely outdated"
 
