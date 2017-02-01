@@ -316,21 +316,21 @@ Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\kt1001\1a&HFF&}
 Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,288)\an1\c&H0000FF&\1a&HFF&}\{\fscx0{\1a&H00&}\N{\p1}m 0 0 l 384 0 384 288 0 288{\p0}
 ; Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\an7\shad271.529\fax-1\fay1\fscx70.711\fscy70.711\frz45\pos(11.318,397.529)}You are using libass
 ; Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\an7\shad271.529\fax-1\fay1\fscx70.711\fscy70.711\frz45\pos(6.552,415.529)}newer than this file.
-Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0}\N.{\1a&hFF&}You are using libass 0.12.2+ 36db47b or 546f500.\NYour copy is outdated!
+; TODO: hanging punctuation in all following lines
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0{\1a&hFF&}\NYou are using libass 0.12.2+ 36db47b or 546f500.\NYour copy is outdated!
 ; OUT OF ORDER: this version is newer than 546f500
 ; This assumes that (unsigned) (1.0 / 255 * -255u) + 1 == -1u / 255 and that (uint8_t) (double) (int32_t) (uint32_t) -1 is defined to be 255. If not, this might be visible in an older libass.
 ; Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,288)\an1\c&H0000FF&\1a&HFF&}\{\fscx0{\1a&hFF&\fade(0,0,-255,-1e16,-1e16,-1e16,254e16)}\N{\p1}m 0 0 l 384 0 384 288 0 288{\p0}
-; Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0}\N.{\1a&hFF&\fade(0,0,-255,-1e16,-1e16,-1e16,254e16)}You are using libass 0.12.2+ 3bbd058 or newer.
+; Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0{\1a&hFF&\fade(0,0,-255,-1e16,-1e16,-1e16,254e16)}You are using libass 0.12.2+ 3bbd058 or newer.
 ; This assumes that uint32_t has an integer conversion rank at least as high as the rank of int. If not, in an older libass this may trigger an int overflow.
 ; This also assumes that unsigned int has at least 32 value bits. I think libass itself assumes this, so this should be rather safe.
 ; If either of these conditions does not hold (but the overflow does not occur or behaves like two's complement wraparound), these two lines will be visible in an older libass with alpha FE, FD, FB, F7, EF, DF, BF or 7F.
 ; This also assumes that a conversion from uint32_t to int32_t is defined as a reinterpretation of the bit pattern as two's complement with the sign bit at 0x80000000.
 Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,288)\an1\c&H009400&\1a&HFF&}\{\fscx0{\1a&hFF&\fade(0,-1,-1,0,0,0,0)}\N{\p1}m 0 0 l 384 0 384 288 0 288{\p0}
-Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0}\N.{\1a&hFF&\fade(0,-1,-1,0,0,0,0)}You are using libass 0.12.2+ 3bbd058 or newer.
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0{\1a&hFF&\fade(0,-1,-1,0,0,0,0)}\NYou are using libass 0.12.2+ 3bbd058 or newer.
 ; \p1 comes before the broken \1a to make sure Perian sees the \p1 and doesn't try to render this line
 ; I used to have &H008484& here for... what, "outdated but not outdated enough to be red"? Why?
 Dialogue: 0,0:00:00.00,00:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\p1\1a&HHFF&}m 0 0 l 384 0 384 288 0 288{\p0}
-; TODO: hanging punctuation in all following lines
 ; e5b86309cf3117cb0a3a4523ae42d483c5356f15/5c3ed3e6feb6e15179d1bc9599cb15150fa07bff
 ; can be distinguished if assumptions are made about int and double.
 ; How about this: have a generic line that doesn't distinguish it, and then have three lines
