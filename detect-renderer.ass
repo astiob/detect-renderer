@@ -205,6 +205,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ;   2.39 merges with guliverkli2 fork
 ; TODO: "VSFilter" vs "DirectVobSub"?
 ; TODO: libjass, ASS.js, asa, old VLC, ffdshow, Subtitler, TextSub?
+; TODO: fix script when muxed into Matroska; detect/handle various ASS demuxers
 ; TODO: try to fix this: VSFilter 2.39 and older are so slow they don't render anything at all until many seconds in if ever
 ;      (and this probably keeps getting worse as I keep adding lines). \fay200 is the biggest (but not only) offender.
 ;    ...Or is it? Now it's rather snappy again even with the \fay200 in. I have no idea what's going on.
