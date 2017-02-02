@@ -318,6 +318,7 @@ Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,288)\an1\c&H0000FF&\1a&HFF
 ; Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\an7\shad271.529\fax-1\fay1\fscx70.711\fscy70.711\frz45\pos(11.318,397.529)}You are using libass
 ; Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\an7\shad271.529\fax-1\fay1\fscx70.711\fscy70.711\frz45\pos(6.552,415.529)}newer than this file.
 ; TODO: hanging punctuation in all following lines
+; 5d7093a54ed23d76f9f6f5638a39a40b4640f90d could be detected if (long long) (10 * ((union { int i; unsigned u; }) {.i = -1}).u) was well-defined
 ; fontselect PostScript names
 ; 45ae478d2dd4576a09b0680e0b8b220a9c30330e
 ; fontselect
