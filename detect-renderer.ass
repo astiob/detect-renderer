@@ -228,6 +228,13 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ;    Oh, lol, this is probably meant as "if there is no effect field, don't parse the dialogue as the effect" (see the first quirk).
 ;  * VSFilter supports HTML tags.
 ;  * Does VSFilter, at least MPC-HC, crash on <tag attr="lol> (with an unpaired quotation mark)?
+;  * VSFilter applies inconsistent alignment when an ASS style is defined with Alignment -2147483648:
+;      * Vertical alignment is bottom, like for \an1, \an2 and \an3.
+;      * Lines within the event are center-aligned, like for \an2.
+;      * Without \pos or \move, the center of the event is aligned with the right edge of the screen minus MarginR, like for \an3.
+;      * With \pos or \move, the left edge of the event is aligned with the position point, like for \an1.
+;      * Without \org, the rotation origin is aligned with the horizontal center of the event, like for \an2 (visually).
+;      * (With \org, the rotation origin is as specified.)
 Dialogue: 0,0:00:00.00,9:59:59.99,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\fscx4000\fscy4000}█{Perian ignores ASS vector drawings and mishandles the video this script comes with in various mysterious ways.}
 ; Perian deletes at most one leading asterisk from the style name in style definitions (and none in Dialogue lines),
 ; so this could be *Default, but that makes VSFilter 2.28 and older dereference NULL and display nothing.
