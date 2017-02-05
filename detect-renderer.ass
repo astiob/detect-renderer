@@ -336,7 +336,7 @@ Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx
 ; 23de9995103c16ceceba19cae87e328be12fa8e4
 Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\p1\fade(0,0,000000000000000000255,0,0,0,0)}m 0 0 l 384 0 384 288 0 288{\p0}
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\fade(0,0,000000000000000000255,0,0,0,0)\1a&hFF&}You are using libass 0.12.2+ 36db47b or 546f500.\NYour copy is outdated!
-; OUT OF ORDER: this version is newer than 546f500
+; OUT OF ORDER: these versions are newer than 546f500.
 ; Take care to hide these lines from VSFilter, which stores timestamps in int.
 ; This assumes that (unsigned) (1.0 / 255 * -255u) + 1 == -1u / 255 and that (uint8_t) (double) (int32_t) (uint32_t) -1 is defined to be 255. If not, this might be visible in an older libass.
 ; Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,288)\an1\c&H0000FF&\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-255,0000000000000000001e4,0,-1e16,254e16)}\N{\p1}m 0 0 l 384 0 384 288 0 288{\p0}
@@ -362,8 +362,8 @@ Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(m 0 0 l 0 
 ; 099f7fd5fad11d7b7c4820fc096be7180914222d
 ; ee94375e1d4c5d977e5e9c4ad5cba9a7f8e2d078 etc.
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(m 0 0 l 384 0 384 l 288 0 288)\1a&HFF(00)}You are using libass 0.10.2+ cc9aaeb to 0.12.1+ b4c39b8.\NYour copy is outdated!
+; OUT OF ORDER: these versions are newer than b4c39b8.
 ; can 4567ad1e3c373ee185d3ba7f044222442ea55534 be distinguished?
-; Beware: this version is newer than the previous one.
 ; I used to have &H008484& here too.
 Dialogue: 0,0:00:00.00,00:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\clip(m 0 0 l 384 0 384 l 288 0 288)\p1}m 0 0 l 384 0 384 288 0 288{\p0}
 Dialogue: 0,0:00:00.00,00:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(m 0 0 l 384 0 384 l 288 0 288)}\NYou are using libass 0.12.1+ 9beeecc or 4567ad1.\NYour copy is outdated!
