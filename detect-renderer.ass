@@ -351,7 +351,7 @@ Dialogue: 0,0:00:00.00,23860:55:45.92,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\
 Dialogue: 0,23860:55:45.92,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0{\1a&hFF&\fade(0,-1,-1,0,0,0,0)}\NYou are using libass 0.12.2+ 3bbd058 to e0bde0b.\NYour copy is outdated!
 ; \p1 comes before the broken \1a to make sure Perian sees the \p1 and doesn't try to render this line
 ; I used to have &H008484& here for... what, "outdated but not outdated enough to be red"? Why?
-Dialogue: 0,0:00:00.00,00:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\p1\1a&HHFF&}m 0 0 l 384 0 384 288 0 288{\p0}
+Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\p1\1a&HHFF&}m 0 0 l 384 0 384 288 0 288{\p0}
 ; e5b86309cf3117cb0a3a4523ae42d483c5356f15/5c3ed3e6feb6e15179d1bc9599cb15150fa07bff
 ; can be distinguished if assumptions are made about int and double.
 ; How about this: have a generic line that doesn't distinguish it, and then have three lines
