@@ -369,7 +369,7 @@ Dialogue: 0,0:00:00.00,00:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\clip(m 0 0 
 Dialogue: 0,0:00:00.00,00:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(m 0 0 l 384 0 384 l 288 0 288)}\NYou are using libass 0.12.1+ 9beeecc or 4567ad1.\NYour copy is outdated!
 ; TODO: does this actually appear white? I don't like that.
 Dialogue: 0,0:00:00.00,0:00:10.00,White,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0{\1a(FF)}\NYou are using libass 0.10.2+ 2c7fc01 to 722fc52.\NYour copy is outdated!
-Dialogue: 0,0:00:00.00,0:00:10.00,Hidden,,0,0,0,,{\pos(192,135)\fscx100\fscy100\iclip(0,0,0,0)\clip(0,0,384,288)\1a&HFF&}\{\fscx0{\1a}\NYou are using libass 0.10.2+ 84b14ca.\NYour copy is outdated!
+Dialogue: 0,0:00:00.00,0:00:10.00,Hidden,,0,0,0,,{\pos(192,135)\fscx100\fscy100\iclip(0,0,0,0)\clip(0,0,384,288)}\{\fscx0{\1a}\NYou are using libass 0.10.2+ 84b14ca.\NYour copy is outdated!
 ; Take care to hide the following two lines from Aegisub r2286.
 ; I used to have &H008484& here too.
 Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,288)\an1\c&H0000FF&\iclip(0,0,0,0)\clip(0,0,0,0)\1a&HFF&}\{\fscx0{\1a&H00&}\N{\p1}m 0 0 l 384 0 384 288 0 288{\p0}
