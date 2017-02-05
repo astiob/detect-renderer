@@ -382,8 +382,8 @@ Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(0,0,0,0)\c
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\fsc\fscx0}You are using libass 0.10.1+ 8d555a1 to 0.10.2+ c337e7a.\NYour copy is outdated!
 Dialogue: 0,0:00:00.00,0:00:10.00,Old,,0,0,0,,{\pos(192,144)\r404\clip0,0,0,0}You are using libass 0.10.1+ 5523d3d.\NYour copy is outdated!
 Dialogue: 0,0:00:00.00,0:00:10.00,Old,,0,0,0,,{\pos(192,144)\r*Old\clip0,0,0,0}You are using libass 0.10.1+ ed55e32 to b992975.\NYour copy is outdated!
-Dialogue: 0,0:00:00.00,0:00:10.00,Old,,0,0,0,,{\pos(192,144)\clip(0,0,0,0)\iclip0,0,0,0\1a&HFF&\t(0,0,\ \1a&H00&)}You are using libass 0.10.1+ 68c3268 or b55b225.\NYour copy is outdated!
-Dialogue: 0,0:00:00.00,0:00:10.00,Old,,0,0,0,,{\pos(192,144)\t(0,0,\ \1a&HFF&)}You are using libass 0.10.1+ 5c9efa1 to d29915d.\NYour copy is outdated!
+Dialogue: 0,0:00:00.00,0:00:10.00,Old,,0,0,0,,{\pos(192,144)\clip(0,0,0,0)\iclip0,0,0,0\1a&HFF&\t(-1,0,\ \1a&H00&)}You are using libass 0.10.1+ 68c3268 or b55b225.\NYour copy is outdated!
+Dialogue: 0,0:00:00.00,0:00:10.00,Old,,0,0,0,,{\pos(192,144)\t(-1,0,\ \1a&HFF&)}You are using libass 0.10.1+ 5c9efa1 to d29915d.\NYour copy is outdated!
 Dialogue: 0,0:00:00.00,9:59:59.99,Box,,0,0,0,,{\move(0,-576,0,0,-1,-1)\c&H0000FF&\p1}m 0 0 l 384 0 384 288 0 288{\p0}
 Dialogue: 0,0:00:00.00,9:59:59.99,Old,,0,0,0,,{\move(0,-576,192,144,-1,-1)}You are using libass 0.10.0+ 2ba3001 to 0.10.1+ 085666a.\NYour copy is outdated!
 ; 340ff8f4cbde87d2ce7d1133889e3afdd66d4e06 to
