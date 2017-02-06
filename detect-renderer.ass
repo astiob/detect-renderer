@@ -327,14 +327,15 @@ Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,288)\an1\c&H009400&\1a&HFF
 ; Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\an7\shad271.529\fax-1\fay1\fscx70.711\fscy70.711\frz45\pos(11.318,397.529)}You are using libass
 ; Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\an7\shad271.529\fax-1\fay1\fscx70.711\fscy70.711\frz45\pos(6.552,415.529)}newer than this file.
 ; TODO: hanging punctuation in all following lines
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\1a&HFF&\t(-1,-1,\clip(0,0,0, })\{\fscx0{\1a}\NYou are using libass 0.13.4+ 3ebd194 or newer.
+Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,288)\an1\c&H0000FF&\1a&HFF&\t(-1,-1,\clip(0,0,0,0, }){\1a}\N{\p1}m 0 0 l 384 0 384 288 0 288{\p0}
 ; 86f65f88d805372fa53d64cb4d08e98180bd735f could be detected if assumptions could be made about size_t and (to avoid undefined behavior before 0b1eaa83fd46c3b56d68592639d358b0557dc427) int
-Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0{\1a}\NYou are using libass 0.13.4+ 858196e or newer.
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\1a&HFF&\t(-1,-1,\clip(0,0,0,0, }){\1a\fade(0,0,255,00000000000000000010000,0,0,0)}\NYou are using libass 0.13.4+ 858196e to ca0ea14.\NYour copy is outdated!
 ; 5d7093a54ed23d76f9f6f5638a39a40b4640f90d could be detected if (long long) (10 * ((union { int i; unsigned u; }) {.i = -1}).u) was well-defined
 ; fontselect PostScript names
 ; 45ae478d2dd4576a09b0680e0b8b220a9c30330e
 ; fontselect
 ; 23de9995103c16ceceba19cae87e328be12fa8e4
-Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\p1\fade(0,0,000000000000000000255,0,0,0,0)}m 0 0 l 384 0 384 288 0 288{\p0}
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\fade(0,0,000000000000000000255,0,0,0,0)\1a&hFF&}You are using libass 0.12.2+ 36db47b or 546f500.\NYour copy is outdated!
 ; OUT OF ORDER: these versions are newer than 546f500.
 ; Take care to hide these lines from VSFilter, which stores timestamps in int.
