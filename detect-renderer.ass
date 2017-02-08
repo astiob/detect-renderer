@@ -206,7 +206,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ;   2.38-0611-4 fixes be1-dots and ugly-fade bugs and adds xbord/ybord/xshad/yshad/blur tags and extends be
 ;   2.39 merges with guliverkli2 fork
 ; TODO: "VSFilter" vs "DirectVobSub"?
-; TODO: libjass, ASS.js, asa, old VLC, ffdshow, Subtitler, TextSub?
+; TODO: MPC-BE, https://github.com/HomeOfVapourSynthEvolution/VSFilter, libjass, ASS.js, asa, old VLC, ffdshow, Subtitler, TextSub?
 ; TODO: fix script when muxed into Matroska; detect/handle various ASS demuxers
 ; TODO: try to fix this: VSFilter 2.39 and older are so slow they don't render anything at all until many seconds in if ever
 ;      (and this probably keeps getting worse as I keep adding lines). \fay200 is the biggest (but not only) offender.
