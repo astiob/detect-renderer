@@ -367,18 +367,18 @@ Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(m 0 0 l 0 
 ; 26ccc19c66298ee7783f45e6534d4ddee90cca15?
 ; 099f7fd5fad11d7b7c4820fc096be7180914222d
 ; ee94375e1d4c5d977e5e9c4ad5cba9a7f8e2d078 etc.
-Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(m 0 0 l 384 0 384 l 288 0 288)\1a&HFF(00)}You are using libass 0.10.2+ cc9aaeb to 0.12.1+ b4c39b8.\NYour copy is outdated!
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(m 0 0 l 384 0 384 l 288 0 288)\1a&HFF(00)}You are using libass 0.11.2+ cc9aaeb to 0.12.1+ b4c39b8.\NYour copy is outdated!
 ; OUT OF ORDER: these versions are newer than b4c39b8.
 ; can 4567ad1e3c373ee185d3ba7f044222442ea55534 be distinguished?
 ; I used to have &H008484& here too.
 Dialogue: 0,0:00:00.00,00:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\clip(m 0 0 l 384 0 384 l 288 0 288)\p1}m 0 0 l 384 0 384 288 0 288{\p0}
 Dialogue: 0,0:00:00.00,00:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(m 0 0 l 384 0 384 l 288 0 288)}\NYou are using libass 0.12.1+ 9beeecc or 4567ad1.\NYour copy is outdated!
-Dialogue: 0,0:00:00.00,0:00:10.00,Red,,0,0,0,,{\pos(192,135)\1c&H000000&\1a&HFF&}\{\fscx0{\1a(FF)}\NYou are using libass 0.10.2+ 2c7fc01 to 722fc52.\NYour copy is outdated!
-Dialogue: 0,0:00:00.00,0:00:10.00,Hidden,,0,0,0,,{\pos(192,135)\fscx100\fscy100\iclip(0,0,0,0)\clip(0,0,384,288)}\{\fscx0{\1a}\NYou are using libass 0.10.2+ 84b14ca.\NYour copy is outdated!
+Dialogue: 0,0:00:00.00,0:00:10.00,Red,,0,0,0,,{\pos(192,135)\1c&H000000&\1a&HFF&}\{\fscx0{\1a(FF)}\NYou are using libass 0.11.2+ 2c7fc01 to 722fc52.\NYour copy is outdated!
+Dialogue: 0,0:00:00.00,0:00:10.00,Hidden,,0,0,0,,{\pos(192,135)\fscx100\fscy100\iclip(0,0,0,0)\clip(0,0,384,288)}\{\fscx0{\1a}\NYou are using libass 0.11.2+ 84b14ca.\NYour copy is outdated!
 ; Take care to hide the following two lines from Aegisub r2286.
 ; I used to have &H008484& here too.
 Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,288)\an1\c&H0000FF&\iclip(0,0,0,0)\clip(0,0,0,0)\1a&HFF&}\{\fscx0{\1a&H00&}\N{\p1}m 0 0 l 384 0 384 288 0 288{\p0}
-Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\iclip(0,0,0,0)\clip(0,0,0,0)\1a&HFF&}\{\fscx0{\1a&H00&}\NYou are using libass 0.10.2+ a7ccf59 to b3c2b31.\NYour copy is outdated!
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\iclip(0,0,0,0)\clip(0,0,0,0)\1a&HFF&}\{\fscx0{\1a&H00&}\NYou are using libass 0.10.2+ a7ccf59 to 0.11.2+ b3c2b31.\NYour copy is outdated!
 ; From this point on, everything is so broken that hiding it from new libass automatically hides it from VSFilter.
 Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\1a&&FF&\p1}m 0 0 l 384 0 384 288 0 288{\p0}
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\1a&&FF&\iclip(0,0,0,0)\iclip(m 0 0 l 1 0 1 1 0 1)\iclip()}You are using libass 0.10.2+ 190fb1e.\NYour copy is outdated!
