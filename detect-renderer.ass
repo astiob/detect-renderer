@@ -210,7 +210,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ;   2.39 merges with guliverkli2 fork
 ; TODO: "VSFilter" vs "DirectVobSub"?
 ; TODO: MPC-BE, https://github.com/HomeOfVapourSynthEvolution/VSFilter, libjass, ASS.js, asa, old VLC, ffdshow, Subtitler, TextSub?
-; TODO: fix script when muxed into Matroska; detect/handle various ASS demuxers
+; TODO: detect/handle various ASS demuxers
 ; TODO: try to fix this: VSFilter 2.39 and older are so slow they don't render anything at all until many seconds in if ever
 ;      (and this probably keeps getting worse as I keep adding lines). \fay200 is the biggest (but not only) offender.
 ;    ...Or is it? Now it's rather snappy again even with the \fay200 in. I have no idea what's going on.
@@ -240,6 +240,31 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ;      * With \pos or \move, the left edge of the event is aligned with the position point, like for \an1.
 ;      * Without \org, the rotation origin is aligned with the horizontal center of the event, like for \an2 (visually).
 ;      * (With \org, the rotation origin is as specified.)
+
+; When this script is muxed into a container that usually provides its own event timestamps in lieu of the plain-text timestamps given in the script,
+; make sure to pretend that the following block is not events and copy it verbatim into the stream header/CodecPrivate for libass to parse during playback.
+; When parsed by libass, these events will all have ReadOrder=0, so enforce ordering through the Layer field (otherwise they'd be reordered arbitrarily).
+; VSFilter parses these events too, but in my tests it never shows them. I'm not sure that this isn't merely a quirk of my particular setup, so keep hiding these events from VSFilter just in case.
+; OUT OF ORDER: these versions are newer than 0.12.2+ 546f500 and older than 0.13.4+ 858196e.
+; Take care to hide these lines from VSFilter, which stores timestamps in int.
+; This assumes that (unsigned) (1.0 / 255 * -255u) + 1 == -1u / 255 and that (uint8_t) (double) (int32_t) (uint32_t) -1 is defined to be 255. If not, this might be visible in an older libass.
+; Dialogue: 1,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,288)\an1\c&H0000FF&\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-255,0000000000000000001e4,0,-1e16,254e16)}\N{\p1}m 0 0 l 384 0 384 288 0 288{\p0}
+; Dialogue: 2,0:00:00.00,23860:55:45.92,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-255,0000000000000000001e11,0,-1e16,254e16)}You are using libass 0.12.2+ 3bbd058 to 0.13.4+ 580ae21.\NYour copy is outdated!
+; This assumes that uint32_t has an integer conversion rank at least as high as the rank of int. If not, in an older libass this may trigger an int overflow.
+; This also assumes that unsigned int has at least 32 value bits. I think libass itself assumes this, so this should be rather safe.
+; If either of these conditions does not hold (but the overflow does not occur or behaves like two's complement wraparound), these lines will be visible in an older libass with alpha FE, FD, FB, F7, EF, DF, BF or 7F.
+; This also assumes that a conversion from uint32_t to int32_t is defined as a reinterpretation of the bit pattern as two's complement with the sign bit at 0x80000000.
+Dialogue: 1,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,288)\an1\c&H0000FF&\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-1,0000000000000000001e4,0,0,0)}\N{\p1}m 0 0 l 384 0 384 288 0 288{\p0}
+Dialogue: 2,0:00:00.00,23860:55:45.92,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-1,0000000000000000001e11,0,0,0)}\NYou are using libass 0.12.2+ 3bbd058 to 0.13.4+ 580ae21.\NYour copy is outdated!
+; This is shown only if unsigned int has at most 34 value bits. Otherwise, even in these libass versions, the above is shown instead.
+Dialogue: 3,23860:55:45.92,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0{\1a&hFF&\fade(0,-1,-1,0,0,0,0)}\NYou are using libass 0.12.2+ 3bbd058 to e0bde0b.\NYour copy is outdated!
+; OUT OF ORDER: these versions are newer than 0.12.1+ b4c39b8 and older than 0.12.1+ 0d94ff4.
+; can 4567ad1e3c373ee185d3ba7f044222442ea55534 be distinguished?
+; I used to have &H008484& here too.
+Dialogue: 1,0:00:00.00,00:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\clip(m 0 0 l 384 0 384 l 288 0 288)\p1}m 0 0 l 384 0 384 288 0 288{\p0}
+Dialogue: 2,0:00:00.00,00:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(m 0 0 l 384 0 384 l 288 0 288)}\NYou are using libass 0.12.1+ 9beeecc or 4567ad1.\NYour copy is outdated!
+[end of codec private]
+
 Dialogue: 0,0:00:00.00,9:59:59.99,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\fscx4000\fscy4000}█{Perian ignores ASS vector drawings and mishandles the video this script comes with in various mysterious ways.}
 ; Perian deletes at most one leading asterisk from the style name in style definitions (and none in Dialogue lines),
 ; so this could be *Default, but that makes VSFilter 2.28 and older dereference NULL and display nothing.
@@ -342,19 +367,6 @@ Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\1a&HFF&\t(-1,-1
 ; fontselect
 ; 23de9995103c16ceceba19cae87e328be12fa8e4
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\fade(0,0,000000000000000000255,0,0,0,0)\1a&hFF&}You are using libass 0.12.2+ 36db47b or 546f500.\NYour copy is outdated!
-; OUT OF ORDER: these versions are newer than 546f500.
-; Take care to hide these lines from VSFilter, which stores timestamps in int.
-; This assumes that (unsigned) (1.0 / 255 * -255u) + 1 == -1u / 255 and that (uint8_t) (double) (int32_t) (uint32_t) -1 is defined to be 255. If not, this might be visible in an older libass.
-; Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,288)\an1\c&H0000FF&\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-255,0000000000000000001e4,0,-1e16,254e16)}\N{\p1}m 0 0 l 384 0 384 288 0 288{\p0}
-; Dialogue: 0,0:00:00.00,23860:55:45.92,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-255,0000000000000000001e11,0,-1e16,254e16)}You are using libass 0.12.2+ 3bbd058 to 0.13.4+ 580ae21.\NYour copy is outdated!
-; This assumes that uint32_t has an integer conversion rank at least as high as the rank of int. If not, in an older libass this may trigger an int overflow.
-; This also assumes that unsigned int has at least 32 value bits. I think libass itself assumes this, so this should be rather safe.
-; If either of these conditions does not hold (but the overflow does not occur or behaves like two's complement wraparound), these lines will be visible in an older libass with alpha FE, FD, FB, F7, EF, DF, BF or 7F.
-; This also assumes that a conversion from uint32_t to int32_t is defined as a reinterpretation of the bit pattern as two's complement with the sign bit at 0x80000000.
-Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,288)\an1\c&H0000FF&\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-1,0000000000000000001e4,0,0,0)}\N{\p1}m 0 0 l 384 0 384 288 0 288{\p0}
-Dialogue: 0,0:00:00.00,23860:55:45.92,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-1,0000000000000000001e11,0,0,0)}\NYou are using libass 0.12.2+ 3bbd058 to 0.13.4+ 580ae21.\NYour copy is outdated!
-; This is shown only if unsigned int has at most 34 value bits. Otherwise, even in these libass versions, the above is shown instead.
-Dialogue: 0,23860:55:45.92,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0{\1a&hFF&\fade(0,-1,-1,0,0,0,0)}\NYou are using libass 0.12.2+ 3bbd058 to e0bde0b.\NYour copy is outdated!
 ; \p1 comes before the broken \1a to make sure Perian sees the \p1 and doesn't try to render this line
 ; I used to have &H008484& here for... what, "outdated but not outdated enough to be red"? Why?
 Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\p1\1a&HHFF&}m 0 0 l 384 0 384 288 0 288{\p0}
@@ -368,11 +380,6 @@ Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(m 0 0 l 0 
 ; 099f7fd5fad11d7b7c4820fc096be7180914222d
 ; ee94375e1d4c5d977e5e9c4ad5cba9a7f8e2d078 etc.
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(m 0 0 l 384 0 384 l 288 0 288)\1a&HFF(00)}You are using libass 0.11.2+ cc9aaeb to 0.12.1+ b4c39b8.\NYour copy is outdated!
-; OUT OF ORDER: these versions are newer than b4c39b8.
-; can 4567ad1e3c373ee185d3ba7f044222442ea55534 be distinguished?
-; I used to have &H008484& here too.
-Dialogue: 0,0:00:00.00,00:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\clip(m 0 0 l 384 0 384 l 288 0 288)\p1}m 0 0 l 384 0 384 288 0 288{\p0}
-Dialogue: 0,0:00:00.00,00:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(m 0 0 l 384 0 384 l 288 0 288)}\NYou are using libass 0.12.1+ 9beeecc or 4567ad1.\NYour copy is outdated!
 Dialogue: 0,0:00:00.00,0:00:10.00,Red,,0,0,0,,{\pos(192,135)\1c&H000000&\1a&HFF&}\{\fscx0{\1a(FF)}\NYou are using libass 0.11.2+ 2c7fc01 to 722fc52.\NYour copy is outdated!
 Dialogue: 0,0:00:00.00,0:00:10.00,Hidden,,0,0,0,,{\pos(192,135)\fscx100\fscy100\iclip(0,0,0,0)\clip(0,0,384,288)}\{\fscx0{\1a}\NYou are using libass 0.11.2+ 84b14ca.\NYour copy is outdated!
 ; Take care to hide the following two lines from Aegisub r2286.
