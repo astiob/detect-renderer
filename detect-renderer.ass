@@ -368,7 +368,7 @@ Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\1a&HFF&\t(-1,-1
 ; fontselect
 ; 23de9995103c16ceceba19cae87e328be12fa8e4
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\fade(0,0,000000000000000000255,0,0,0,0)\1a&hFF&}You are using libass 0.12.2+ 36db47b or 546f500.\NYour copy is outdated!
-; \p1 comes before the broken \1a to make sure Perian sees the \p1 and doesn't try to render this line
+; \p1 comes before the broken \1a to make sure Perian sees the \p1 and doesn't try to render this box
 ; I used to have &H008484& here for... what, "outdated but not outdated enough to be red"? Why?
 Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\p1\1a&HHFF&}m 0 0 l 384 0 384 288 0 288{\p0}
 ; e5b86309cf3117cb0a3a4523ae42d483c5356f15/5c3ed3e6feb6e15179d1bc9599cb15150fa07bff
