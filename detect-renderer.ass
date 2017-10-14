@@ -68,7 +68,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ;    r63 \xbord \ybord \xshad \yshad
 ;    r64 \iclip
 ; VSFilterMod: (https://code.google.com/p/vsfiltermod/)
-;    r2   everything (runs split on \fax\fay changes)
+;    r2   everything; includes these changes among others: runs split on \fax\fay changes, karaoke coordinates calculated after transform, leftmost pixel of CWord always shown in primary colour regardless of karaoke (except when +90<frz%360<+270 and kstart<=time<kend, when it is shown in secondary colour regardless of karaoke speed)
 ;    r11  somewhat broken* nested parentheses, \[1-4]img now takes decimal positions instead of hexadecimal
 ;    r17  fixed parentheses, \[1-4]img position now optional
 ;    ......
@@ -113,6 +113,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ;   2.41.6263   https://github.com/mpc-hc/mpc-hc.git@de14ef44e6cab14350be937ccb9664fdfcfe29a9                                                              MPC-HC 1.6.5.6263 \fscx(float) \fscy(float)
 ;               https://github.com/mpc-hc/mpc-hc.git@8f3d30412adad6bfa152c6ebf8738965bb79cf28                                                                                \frx\fry\frz converted to radians by multiplying by M_PI/180, z coordinate limit removed
 ;   2.41.308    https://github.com/mpc-hc/mpc-hc.git@fca1d9d3fb6170c2e2379de235f3f39417683ddf                                                              MPC-HC 1.7.1.308  parser cache, broke lots of stuff**
+;   2.41.4      https://github.com/mpc-hc/mpc-hc.git@60b7492f4ab98c7c5fa901291d6a62a762c00fa2                                                              MPC-HC 1.7.3.4    fixed karaoke effects on leftmost pixel of CWord
 ;               https://github.com/mpc-hc/mpc-hc.git@1f6b129d65e8de158e1119b348e59ac43d5ff7e6                                                                                integers in headers read via wcstol and hence saturate to LONG_MIN/LONG_MAX
 ;   2.41.14     https://github.com/mpc-hc/mpc-hc.git@90577746cc7dbbff742129ceb36ae8e85f56c3e8                                                              MPC-HC 1.7.6.14   fixed \fs-
 ;   2.41.24     https://github.com/mpc-hc/mpc-hc.git@4470846b0cf494ca8bbb404bf91351c8c95251b4                                                              MPC-HC 1.7.6.24   float in drawings: lround()ed to 26.6 before scaling
@@ -141,6 +142,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ;   nested parentheses are supported (they shouldn't be)
 ;   \[1-4]a and \alpha values are &0xFF (they shouldn't be) https://code.google.com/p/xy-vsfilter/issues/detail?id=80
 ;   embedded fonts do not end at lines beginning with '[' (they should) (or is this a good thing? xy-VSFilter and libass have this too)
+;   karaoke coordinates are calculated after transform (should be before) (or is this a good thing? but MPC-HC is alone here)
 ; Stuff still broken in MPC-HC because speeeed:
 ;   unknown tags should still skip the parenthesized arguments
 ;   oh god dem single numeric arguments. they should be taken from the string argument array, not from cmd.Mid()
