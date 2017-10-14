@@ -157,7 +157,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ;   anamorphic correction for 3D transforms (libass does this! ha!)
 ;   anamorphic correction for blur
 ; Threaded VSFilter:
-;   r2   forked from some revision of MPC-HC
+;   r2   forked from MPC-HC 1.5.2.3160 (a6d0a45ebdc54198bae2c0279bc75f498be2c539)
 ;   r114 \be(float) \fscx(float) \fscy(float) \fs(float)
 ; Stuff still broken in Threaded VSFilter because it never got fixed from the time of guliverkli:
 ;   \kt(float) \kf(float) \K(float) \ko(float) \k(float)
