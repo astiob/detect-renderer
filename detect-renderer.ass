@@ -242,6 +242,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ;      * With \pos or \move, the left edge of the event is aligned with the position point, like for \an1.
 ;      * Without \org, the rotation origin is aligned with the horizontal center of the event, like for \an2 (visually).
 ;      * (With \org, the rotation origin is as specified.)
+;  * Don't forget VSFilter ignores the Format lines.
 
 ; When this script is muxed into a container that usually provides its own event timestamps in lieu of the plain-text timestamps given in the script,
 ; make sure to pretend that the following block is not events and copy it verbatim into the stream header/CodecPrivate for libass to parse during playback.
