@@ -112,11 +112,14 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ;   2.41.2.4483 https://github.com/mpc-hc/mpc-hc.git@3723d940106be42a4361cba18c91de62054103ab https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@4483 MPC-HC 1.6.2.4483 VSFilterMod mostly removed
 ;   2.41.6263   https://github.com/mpc-hc/mpc-hc.git@de14ef44e6cab14350be937ccb9664fdfcfe29a9                                                              MPC-HC 1.6.5.6263 \fscx(float) \fscy(float)
 ;               https://github.com/mpc-hc/mpc-hc.git@8f3d30412adad6bfa152c6ebf8738965bb79cf28                                                                                \frx\fry\frz converted to radians by multiplying by M_PI/180, z coordinate limit removed
+; b98bbf8ea1c7a59725d88c57c4b5f534f11b7f23 supposedly reverts bd96d9168129cbab728094c5b5773486fb291635
 ;   2.41.308    https://github.com/mpc-hc/mpc-hc.git@fca1d9d3fb6170c2e2379de235f3f39417683ddf                                                              MPC-HC 1.7.1.308  parser cache, broke lots of stuff**
 ;   2.41.4      https://github.com/mpc-hc/mpc-hc.git@60b7492f4ab98c7c5fa901291d6a62a762c00fa2                                                              MPC-HC 1.7.3.4    fixed karaoke effects on leftmost pixel of CWord
 ;   2.41.8      https://github.com/mpc-hc/mpc-hc.git@3cca9896ce2218d3c7169e54673d18e9c8010440                                                              MPC-HC 1.7.3.8    \t with 4 arguments overreads buffer (crash or invalid acceleration)
 ;   2.41.9      https://github.com/mpc-hc/mpc-hc.git@a835ca39745acd38786e93c03006ca94a94a5377                                                              MPC-HC 1.7.3.9    \t with incorrect number of arguments no longer crashes but does nothing instead
 ;   2.41.14     https://github.com/mpc-hc/mpc-hc.git@98ac57ea0ba5e8cbe22d114ff928c5edde4e3780                                                              MPC-HC 1.7.3.14   buffer overread fixed
+; 7147f46af1252e61bb502ce50a227b1926c6a632
+; 67d0a292b5bb5383ba33c6c65303c36d3ea3bd77
 ;               https://github.com/mpc-hc/mpc-hc.git@1f6b129d65e8de158e1119b348e59ac43d5ff7e6                                                                                integers in headers read via wcstol and hence saturate to LONG_MIN/LONG_MAX
 ;   2.41.14     https://github.com/mpc-hc/mpc-hc.git@90577746cc7dbbff742129ceb36ae8e85f56c3e8                                                              MPC-HC 1.7.6.14   fixed \fs-
 ;   2.41.24     https://github.com/mpc-hc/mpc-hc.git@4470846b0cf494ca8bbb404bf91351c8c95251b4                                                              MPC-HC 1.7.6.24   float in drawings: lround()ed to 26.6 before scaling
@@ -358,6 +361,9 @@ Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\kt1001\1a&HFF&}
 ; {\1a&HFF&}\{\1a&H00&}\N hides stuff from libass
 ; \NYou should upgrade to xy-VSFilter.
 ; You are using libass\Nnewer than this file.
+; libass #285 (6080b45e01ae8da6f46dc0e93e71332eb55d04ac) fixes false cache hits when two clip masks differ only in vector coordinate scale and when two style-3 borders differ only in advance.x due to complex shaping
+; libass 49eb2d2ecdc12d2dcd3af8ca00067cb4161679ff: no style-3 border around spaces? fixed in abfa6cfdb045d16383b72c78b2ee60929c575a87
+; same thing? 04b51c2d, fixed in 98707694069b6f1808eef5e1d23bc63fb575e067
 Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,288)\an1\c&H009400&\1a&HFF&}\{\fscx0{\1a}\N{\p1}m 0 0 l 384 0 384 288 0 288{\p0}
 ; Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\an7\shad271.529\fax-1\fay1\fscx70.711\fscy70.711\frz45\pos(11.318,397.529)}You are using libass
 ; Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\an7\shad271.529\fax-1\fay1\fscx70.711\fscy70.711\frz45\pos(6.552,415.529)}newer than this file.
