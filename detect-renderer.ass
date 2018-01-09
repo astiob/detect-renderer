@@ -114,6 +114,9 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ;               https://github.com/mpc-hc/mpc-hc.git@8f3d30412adad6bfa152c6ebf8738965bb79cf28                                                                                \frx\fry\frz converted to radians by multiplying by M_PI/180, z coordinate limit removed
 ;   2.41.308    https://github.com/mpc-hc/mpc-hc.git@fca1d9d3fb6170c2e2379de235f3f39417683ddf                                                              MPC-HC 1.7.1.308  parser cache, broke lots of stuff**
 ;   2.41.4      https://github.com/mpc-hc/mpc-hc.git@60b7492f4ab98c7c5fa901291d6a62a762c00fa2                                                              MPC-HC 1.7.3.4    fixed karaoke effects on leftmost pixel of CWord
+;   2.41.8      https://github.com/mpc-hc/mpc-hc.git@3cca9896ce2218d3c7169e54673d18e9c8010440                                                              MPC-HC 1.7.3.8    \t with 4 arguments overreads buffer (crash or invalid acceleration)
+;   2.41.9      https://github.com/mpc-hc/mpc-hc.git@a835ca39745acd38786e93c03006ca94a94a5377                                                              MPC-HC 1.7.3.9    \t with incorrect number of arguments no longer crashes but does nothing instead
+;   2.41.14     https://github.com/mpc-hc/mpc-hc.git@98ac57ea0ba5e8cbe22d114ff928c5edde4e3780                                                              MPC-HC 1.7.3.14   buffer overread fixed
 ;               https://github.com/mpc-hc/mpc-hc.git@1f6b129d65e8de158e1119b348e59ac43d5ff7e6                                                                                integers in headers read via wcstol and hence saturate to LONG_MIN/LONG_MAX
 ;   2.41.14     https://github.com/mpc-hc/mpc-hc.git@90577746cc7dbbff742129ceb36ae8e85f56c3e8                                                              MPC-HC 1.7.6.14   fixed \fs-
 ;   2.41.24     https://github.com/mpc-hc/mpc-hc.git@4470846b0cf494ca8bbb404bf91351c8c95251b4                                                              MPC-HC 1.7.6.24   float in drawings: lround()ed to 26.6 before scaling
@@ -137,7 +140,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ;    alpha and color tags with a value consisting entirely of /^[&H]+$/ act as if they have a value of 0;
 ;    \fs- now acts as \fs+;
 ;    \fsN(+) and \fsN(-) now act as \fs+N (and \fs-N after \fs- is fixed);
-;    \t(literally nothing in parentheses) might be broken?
+;    \t with an incorrect number of arguments crashes
 ; Stuff still broken in MPC-HC because of VSFilterMod:
 ;   nested parentheses are supported (they shouldn't be)
 ;   \[1-4]a and \alpha values are &0xFF (they shouldn't be) https://code.google.com/p/xy-vsfilter/issues/detail?id=80
