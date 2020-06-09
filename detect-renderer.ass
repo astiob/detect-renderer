@@ -46,7 +46,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ;  r2276 https://github.com/Aegisub/Aegisub.git@c54cf755ac3447389803ddbd3fb984d3d1343b43 glyph fill excluded from outline always, even on \1a&H00&\2a&H00&\fad(...) which previously didn't exclude it
 ;  r2278 https://github.com/Aegisub/Aegisub.git@13654219c26158e1d75cefc5467849686fdb22b3 \xbord \ybord \xshad \yshad (\xbord0\ybordX acts like \bord0), Banner effect position changed when \xbord != 0*, bord/shad scaling changed**
 ;  r2279 https://github.com/Aegisub/Aegisub.git@5d3b1fe8c2cee5ff3bd861dae1839d5ed9bc947b \beN \t(\be) <------ tadadada, the single most troublesome ASS commit ever
-;  r2282 https://github.com/Aegisub/Aegisub.git@582dd39cbdcee6b55f5645a480599a17058a8985 fixed \xbord0\ybordX: can't detect this? can hide an older message but can't show a new message
+;  r2282 https://github.com/Aegisub/Aegisub.git@582dd39cbdcee6b55f5645a480599a17058a8985 fixed \xbord0\ybordX: TODO detect this using negative MarginV and collision stacking to display message
 ;  r2284 https://github.com/Aegisub/Aegisub.git@ea79951788b45bc31286c6ced85bc6608ae625d4 \blur        <------ runner-up
 ; (r2285 https://github.com/Aegisub/Aegisub.git@94d3185170800f87cc7e0e70e84f50f8d1e569df glyph fill excluded from outline iff not \1a&H00&\2a&H00&\fad(inactive right now) (only a qualitative change) (although may be usable for pixel-perfect tests))
 ;  r2286 https://github.com/Aegisub/Aegisub.git@0e6dd47bf0546c548386a6bbbf85cc96e338f04d \iclip(rectangle) (\iclip(rect)\clip(rect) stays iclip)
