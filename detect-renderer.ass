@@ -348,10 +348,10 @@ Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\iclip(0,0,38
 ; When editing these lines, make sure to edit all copies of each line simultaneously.
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\iclip(0,0,384,288)}You are using Aegisub v2.1.2\Nrelease preview SVN r2284\N{\1a&HFF&}.{\1a}or r2285, or Guliverkli2 r63.\NYour copy is severely outdated!
 ; These lines don't require the iclip, but I'm keeping it to ensure minimum visible noise in newer VSFilters
-Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(-192,-144)\iclip(0,0,384,288)\xshad384\yshad288\blur128\bord1\4c&H0000FF&}You are using Aegisub v2.1.2\Nrelease preview SVN r2284\N{\1a&HFF&}.{\1a}or r2285, or Guliverkli2 r63.\NYour copy is severely outdated!
-Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(-192,-144)\iclip(0,0,384,288)\xshad384\yshad288\blur128}You are using Aegisub v2.1.2\N{\4a&HFF&}.{\4a}release preview SVN r2279 to r2283.\NYour copy is severely outdated!
-Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(-192,-144)\iclip(0,0,384,288)\xshad384\yshad288\be128\bord1\4c&H0000FF&}You are using Aegisub v2.1.2\N{\4a&HFF&}.{\4a}release preview SVN r2279 to r2283.\NYour copy is severely outdated!
-Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(-192,-144)\iclip(0,0,384,288)\xshad384\yshad288\be128}You are using Aegisub v2.1.2\N{\4a&HFF&}.{\4a}release preview SVN r2278.\NYour copy is severely outdated!
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(-192,-144)\iclip(0,0,384,288)\xshad384\yshad288\blur48\bord1\4c&H0000FF&}release preview SVN r2284\N{\4a&HFF&\blur0}.{\4a\blur48}or r2285, or Guliverkli2 r63.
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(-192,-144)\iclip(0,0,384,288)\xshad384\yshad288\4a&HFF&}.{\4a\blur48}release preview SVN r2279 to r2283.
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(-192,-144)\iclip(0,0,384,288)\xshad384\yshad288\bord1\4c&H0000FF&\4a&HFF&}.{\4a\be128}release preview SVN r2279 to r2283.
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(-192,-144)\iclip(0,0,384,288)\xshad384\yshad288\4a&HFF&}.{\4a\be128}release preview SVN r2278.
 Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(-384,-384)\4c&H0000FF&\shad384\xshad0\yshad0\p1}m 0 0 l 384 0 384 288 0 288{\p0}
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(-192,-240)\shad384\xshad0\yshad0\4a&HFF&}.{\4a}You are using Guliverkli2 r62.\NYour copy is severely outdated!
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(-192,-240)\shad384\xshad0\yshad0\be128\bord1\4c&H0000FF&\4a&HFF&}.{\4a}You are using Guliverkli2 r62.\NYour copy is severely outdated!
