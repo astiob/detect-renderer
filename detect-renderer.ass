@@ -260,16 +260,16 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ; OUT OF ORDER: these versions are newer than 0.12.2+ 546f500 and older than 0.13.4+ 858196e.
 ; Take care to hide these lines from VSFilter, which stores timestamps in int.
 ; This assumes that (unsigned) (1.0 / 255 * -255u) + 1 == -1u / 255 and that (uint8_t) (double) (int32_t) (uint32_t) -1 is defined to be 255. If not, this might be visible in an older libass.
-; Dialogue:01,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,288)\an1\c&H0000FF&\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-255,0000000000000000001e4,0,-1e16,254e16)}\N{\p1}m 0 0 l 384 0 384 288 0 288{\p0}
-; Dialogue:02,0:00:00.00,23860:55:45.92,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-255,0000000000000000001e11,0,-1e16,254e16)}You are using libass 0.12.2+ 3bbd058 to 0.13.4+ 580ae21.\NYour copy is outdated!
+; Dialogue:01,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,288)\an1\c&H0000FF&\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-255,00000000000000000010000,0,-1e16,254e16)}\N{\p1}m 0 0 l 384 0 384 288 0 288{\p0}
+; Dialogue:02,0:00:00.00,23860:55:45.92,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-255,00000000000000000085899345920,0,-1e16,254e16)}You are using libass 0.12.2+ 3bbd058 to 0.13.4+ 580ae21.\NYour copy is outdated!
 ; This assumes that uint32_t has an integer conversion rank at least as high as the rank of int. If not, in an older libass this may trigger an int overflow.
 ; This also assumes that unsigned int has at least 32 value bits. I think libass itself assumes this, so this should be rather safe.
 ; If either of these conditions does not hold (but the overflow does not occur or behaves like two's complement wraparound), these lines will be visible in an older libass with alpha FE, FD, FB, F7, EF, DF, BF or 7F.
 ; This also assumes that a conversion from uint32_t to int32_t is defined as a reinterpretation of the bit pattern as two's complement with the sign bit at 0x80000000.
-Dialogue:01,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,288)\an1\c&H0000FF&\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-1,0000000000000000001e4,0,0,0)}\N{\p1}m 0 0 l 384 0 384 288 0 288{\p0}
-Dialogue:02,0:00:00.00,23860:55:45.92,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-1,0000000000000000001e11,0,0,0)}\NYou are using libass 0.12.2+\N3bbd058 to 0.13.4+ 580ae21\N(likely 0.12.2+ 8c8741f to 0.13.4+{\1a&HFF&}({\1a}\N580ae21, unless your platform\N{\1a&HFF&}).{\1a}has superwide integers).\NYour copy is outdated!
+Dialogue:01,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,288)\an1\c&H0000FF&\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-1,00000000000000000010000,0,0,0)}\N{\p1}m 0 0 l 384 0 384 288 0 288{\p0}
+Dialogue:02,0:00:00.00,23860:55:45.92,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-1,00000000000000000085899345920,0,0,0)}\NYou are using libass 0.12.2+\N3bbd058 to 0.13.4+ 580ae21\N(likely 0.12.2+ 8c8741f to 0.13.4+{\1a&HFF&}({\1a}\N580ae21, unless your platform\N{\1a&HFF&}).{\1a}has superwide integers).\NYour copy is outdated!
 ; This is shown only if unsigned int has at most 34 value bits. Otherwise, even in these libass versions, the above is shown instead.
-Dialogue:03,23860:55:45.92,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-1,0000000000000000001e4,0,0,0)}\NYou are using libass 0.12.2+\N3bbd058 to 0.13.4+ 580ae21\N{\1a&HFF&},{\1a}(likely 0.12.2+ 3bbd058 to e0bde0b,{\1a&HFF&}({\1a}\N{\1a&HFF&}).{\1a}unless you are using Aegisub).\NYour copy is outdated!
+Dialogue:03,23860:55:45.92,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-1,00000000000000000010000,0,0,0)}\NYou are using libass 0.12.2+\N3bbd058 to 0.13.4+ 580ae21\N{\1a&HFF&},{\1a}(likely 0.12.2+ 3bbd058 to e0bde0b,{\1a&HFF&}({\1a}\N{\1a&HFF&}).{\1a}unless you are using Aegisub).\NYour copy is outdated!
 ; OUT OF ORDER: these versions are newer than 0.12.1+ b4c39b8 and older than 0.12.1+ 0d94ff4.
 ; can 4567ad1e3c373ee185d3ba7f044222442ea55534 be distinguished?
 ; I used to have &H008484& here too.
