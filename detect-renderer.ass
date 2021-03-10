@@ -253,10 +253,12 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
 ; When this script is muxed into a container that usually provides its own event timestamps in lieu of the plain-text timestamps given in the script,
 ; make sure to pretend that the following block is not events and copy it verbatim into the stream header/CodecPrivate for libass to parse during playback.
+; Omit the space after Dialogue: to trick MKVToolNix into doing this. In case this gets fixed, add an explicit terminator so that MKVToolNix can be patched to do this explicitly.
+; Add extra garbage after a timestamp to ensure that FFmpeg and VLC also put these lines in the stream header when parsing a standalone ASS file.
 ; When parsed by libass, these events will all have ReadOrder=0, so enforce ordering through the Layer field (otherwise they'd be reordered arbitrarily).
 ; VSFilter parses these events too, but in my tests it never shows them. I'm not sure that this isn't merely a quirk of my particular setup, so keep hiding these events from VSFilter just in case.
-; Omit the space after Dialogue: to ensure that FFmpeg and VLC also put these lines in the stream header when parsing a standalone ASS file.
-; Add a zero in its place to ensure that Aegisub is able to load the file (rather than abort with an error as it tries to parse the field starting at a constant offset of 10 as a number).
+; Add a zero replacing the removed space to ensure that Aegisub is able to load the file
+; (rather than abort with an error as it tries to parse the field starting at a constant offset of 10 as a number).
 ; OUT OF ORDER: these versions are newer than 0.12.2+ 546f500 and older than 0.13.4+ 858196e.
 ; Take care to hide these lines from VSFilter, which stores timestamps in int.
 ; This assumes that (unsigned) (1.0 / 255 * -255u) + 1 == -1u / 255 and that (uint8_t) (double) (int32_t) (uint32_t) -1 is defined to be 255. If not, this might be visible in an older libass.
@@ -266,16 +268,16 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ; This also assumes that unsigned int has at least 32 value bits. I think libass itself assumes this, so this should be rather safe.
 ; If either of these conditions does not hold (but the overflow does not occur or behaves like two's complement wraparound), these lines will be visible in an older libass with alpha FE, FD, FB, F7, EF, DF, BF or 7F.
 ; This also assumes that a conversion from uint32_t to int32_t is defined as a reinterpretation of the bit pattern as two's complement with the sign bit at 0x80000000.
-Dialogue:01,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,288)\an1\c&H0000FF&\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-1,00000000000000000010000,0,0,0)}\N{\p1}m 0 0 l 384 0 384 288 0 288{\p0}
-Dialogue:02,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-1,00000000000000000010000,0,0,0)}\NYou are using libass 0.12.2+\N3bbd058 to 0.13.4+ 580ae21\N(likely 0.12.2+ 8c8741f to 0.13.4+{\1a&HFF&}({\1a}\N580ae21, unless your platform\N{\1a&HFF&}).{\1a}has superwide integers).\NYour copy is outdated!
+Dialogue:01,0:00:00.00!,0:00:10.00,Box,,0,0,0,,{\pos(0,288)\an1\c&H0000FF&\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-1,00000000000000000010000,0,0,0)}\N{\p1}m 0 0 l 384 0 384 288 0 288{\p0}
+Dialogue:02,0:00:00.00!,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-1,00000000000000000010000,0,0,0)}\NYou are using libass 0.12.2+\N3bbd058 to 0.13.4+ 580ae21\N(likely 0.12.2+ 8c8741f to 0.13.4+{\1a&HFF&}({\1a}\N580ae21, unless your platform\N{\1a&HFF&}).{\1a}has superwide integers).\NYour copy is outdated!
 ; This is shown only if unsigned int has at most 34 value bits. Otherwise, even in these libass versions, the above is shown instead.
-Dialogue:03,23860:55:45.92,0:00:10.00,Box,,0,0,0,,{\pos(0,288)\an1\c&H0000FF&\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-1,00000000000000000010000,0,0,0)}\N{\p1}m 0 0 l 384 0 384 288 0 288{\p0}
-Dialogue:04,23860:55:45.92,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-1,00000000000000000010000,0,0,0)}\NYou are using libass 0.12.2+\N3bbd058 to 0.13.4+ 580ae21\N{\1a&HFF&},{\1a}(likely 0.12.2+ 3bbd058 to e0bde0b,{\1a&HFF&}({\1a}\N{\1a&HFF&}).{\1a}unless you are using Aegisub).\NYour copy is outdated!
+Dialogue:03,23860:55:45.92!,0:00:10.00,Box,,0,0,0,,{\pos(0,288)\an1\c&H0000FF&\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-1,00000000000000000010000,0,0,0)}\N{\p1}m 0 0 l 384 0 384 288 0 288{\p0}
+Dialogue:04,23860:55:45.92!,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-1,00000000000000000010000,0,0,0)}\NYou are using libass 0.12.2+\N3bbd058 to 0.13.4+ 580ae21\N{\1a&HFF&},{\1a}(likely 0.12.2+ 3bbd058 to e0bde0b,{\1a&HFF&}({\1a}\N{\1a&HFF&}).{\1a}unless you are using Aegisub).\NYour copy is outdated!
 ; OUT OF ORDER: these versions are newer than 0.12.1+ b4c39b8 and older than 0.12.1+ 0d94ff4.
 ; can 4567ad1e3c373ee185d3ba7f044222442ea55534 be distinguished?
 ; I used to have &H008484& here too.
-Dialogue:01,0:00:00.00,00:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\p1}m 0 0 l 384 0 384 l 288 0 288{\p0}
-Dialogue:02,0:00:00.00,00:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(m 0 0 l 384 0 384 l 288 0 288)}\NYou are using libass 0.12.1+ 9beeecc or 4567ad1.\NYour copy is outdated!
+Dialogue:01,0:00:00.00!,00:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\p1}m 0 0 l 384 0 384 l 288 0 288{\p0}
+Dialogue:02,0:00:00.00!,00:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(m 0 0 l 384 0 384 l 288 0 288)}\NYou are using libass 0.12.1+ 9beeecc or 4567ad1.\NYour copy is outdated!
 end of codec private
 
 Dialogue: 0,0:00:00.00,9:59:59.99,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\fscx4000\fscy4000}█{Perian ignores ASS vector drawings and mishandles the video this script comes with in various mysterious ways.}
