@@ -257,8 +257,8 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ; Add extra garbage after a timestamp to ensure that FFmpeg and VLC also put these lines in the stream header when parsing a standalone ASS file.
 ; When parsed by libass, these events will all have ReadOrder=0, so enforce ordering through the Layer field (otherwise they'd be reordered arbitrarily).
 ; VSFilter parses these events too, but in my tests it never shows them. I'm not sure that this isn't merely a quirk of my particular setup, so keep hiding these events from VSFilter just in case.
-; Add a zero replacing the removed space to ensure that Aegisub is able to load the file
-; (rather than abort with an error as it tries to parse the field starting at a constant offset of 10 as a number).
+; Add a zero replacing the removed space to ensure that Aegisub and FFmpeg read the correct Layer and that Aegisub is able to load the file at all,
+; as they start reading the Layer field at a constant offset of 10 (and Aegisub aborts with an error if it is not a valid decimal integer).
 ; OUT OF ORDER: these versions are newer than 0.12.2+ 546f500 and older than 0.13.4+ 858196e.
 ; Take care to hide these lines from VSFilter, which stores timestamps in int.
 ; This assumes that (unsigned) (1.0 / 255 * -255u) + 1 == -1u / 255 and that (uint8_t) (double) (int32_t) (uint32_t) -1 is defined to be 255. If not, this might be visible in an older libass.
