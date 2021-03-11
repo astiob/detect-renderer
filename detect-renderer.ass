@@ -24,7 +24,7 @@ Style: Box,Arial,18,&H00000000,&H0000FFFF,&H00000000,&H00000000,-1,0,0,0,100,100
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ; \{libass and asa display a brace and this text. VSFilter displays a backslash and reads this text as a comment/override.}
 ; {VSFilter and libass 3199a87+ display a brace and this text. libass 0908a56- and asa display nothing and read this text as a comment/override.
-; Perian reads each brace group as either {\bunch\of\well-formed\tags\all\of\which\it\knows} or {comment}. Or does it? This doesn't match what I'm seeing.
+; Perian reads each brace group as {\bunch\of\well-formed\tags\all\of\which\it\knowsCOMMENT}. It also skips vector drawings (but not whole lines that contain them).
 ; Mainline VSFilter history:
 ; Guliverkli:
 ;   r8   2.24 1.0.0.0 initial commit
@@ -340,7 +340,8 @@ Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,-144)\clip(0,0,0,0)\
 ; Everyone else rounds before scaling.
 ; Dialogue: 0,0:00:00.00,0:00:10.00,Hidden,,0,0,0,,{\pos(192,-144)\rDefault\lalala(\fscy3686400\p1)}m 0 0 m 0 0.031249999999999997{\p0\fscy100}\NYou are using XySubFilter\N{\1a}.{\1a&H00&}3.1.0.746 or newer.
 ; Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,-144)\lalala(\fscy3686400\p1)}lm 0 0 lm 0 0.015624999999999998{\p0\fscy100}\NYou are using MPC-HC\N{\1a&HFF&},{\1a}1.7.6.24 to 1.7.6.190{35}{ or to .190 with the display height a multiple of 28*64=18432 pixels},\N{\1a&HFF&}.{\1a}or the corresponding VSFilter.{Green background and no "outdated" message because this version is more correct than the newer one. (But both are bugged due to VSFilterMod and the new tag parser.)}
-Dialogue: 0,0:00:00.00,0:00:10.00,Hidden,,0,0,0,,{\pos(192,108)\an8\rDefault\org(()\clip(0,0,0,0))\fs1440\fs-0.9875e1)}You are using XySubFilter\N{\1a},{\1a&H00&}3.1.0.746 to 3.1.0.752,\Nor MPC-HC newer than this file\N{\1a}.{\1a&H00&}or the corresponding VSFilter.{Red background.}
+; Take care to put \fs1440 before \fs- and the broken \org so that Perian sees it and renders this text effectively invisible.
+Dialogue: 0,0:00:00.00,0:00:10.00,Hidden,,0,0,0,,{\pos(192,108)\an8\rDefault\fs1440\fs-0.9875e1\org(()\clip(0,0,0,0)))}You are using XySubFilter\N{\1a},{\1a&H00&}3.1.0.746 to 3.1.0.752,\Nor MPC-HC newer than this file\N{\1a}.{\1a&H00&}or the corresponding VSFilter.{Red background.}
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,117)\an8\org(()\clip(0,0,0,0))\fs0.1422e4\clip(m lm 0 0 l 384.0 0 384 288 0 288)}You are using MPC-HC\N{\1a&HFF&},{\1a}1.7.6.24 to 1.7.6.190,\N{\1a&HFF&}.{\1a}or the corresponding VSFilter.{Green background and no "outdated" message because this version is more correct than the newer one. (But both are bugged due to VSFilterMod and the new tag parser.)}
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(m 0 0 !ln 384 0 384 288 0 288)}You are using MPC-HC 1.7.8.141 or\N{\1a&HFF&}.{\1a}newer, or the corresponding VSFilter.
 Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H008484&\1a&HFF&\1va(0,0,0,0)\p1}m 0 0 l 384.0 0 384 288 0 288{\p0}
@@ -388,7 +389,7 @@ Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\1a&HFF&\t(-1,-1
 ; fontselect
 ; 23de9995103c16ceceba19cae87e328be12fa8e4
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\fade(0,0,000000000000000000255,0,0,0,0)\1a&hFF&}You are using libass 0.12.2+ 36db47b or 546f500.\NYour copy is outdated!
-; \p1 comes before the broken \1a to make sure Perian sees the \p1 and doesn't try to render this box
+; Take care to put \p1 before the broken \1a so that Perian sees the \p1 and doesn't try to render this box.
 ; I used to have &H008484& here for... what, "outdated but not outdated enough to be red"? Why?
 Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\p1\1a&HHFF&}m 0 0 l 384 0 384 288 0 288{\p0}
 ; e5b86309cf3117cb0a3a4523ae42d483c5356f15/5c3ed3e6feb6e15179d1bc9599cb15150fa07bff
