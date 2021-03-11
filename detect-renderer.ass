@@ -18,6 +18,7 @@ Style: Old,Arial,18,&H00000000,&H0000FFFF,&H00000000,&H00000000,-1,0,0,0,100,100
 Style: *Old,Arial,18,&HFF000000,&H0000FFFF,&H00000000,&H00000000,-1,0,0,0,0,0,0,0,1,0,0,5,40,40,20,1
 Style: Hidden,Arial,18,&HFF000000,&H0000FFFF,&H00000000,&H00000000,-1,0,0,0,0,0,0,0,1,0,0,5,40,40,20,1
 Style: Perian,Arial,18,&H00000000,&H0000FFFF,&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,0,0,5,40,40,20,1
+Style: Collision,Arial,18,&H00000000,&HFF00FFFF,&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,0,0,2,40,40,232,1
 Style: Box,Arial,18,&H00000000,&H0000FFFF,&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,0,0,7,40,40,20,1
 
 [Events]
@@ -25,6 +26,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ; \{libass and asa display a brace and this text. VSFilter displays a backslash and reads this text as a comment/override.}
 ; {VSFilter and libass 3199a87+ display a brace and this text. libass 0908a56- and asa display nothing and read this text as a comment/override.
 ; Perian reads each brace group as {\bunch\of\well-formed\tags\all\of\which\it\knowsCOMMENT}. It also skips vector drawings (but not whole lines that contain them).
+; Perian's application of Layer values is also odd. (TODO figure out the details)
 ; Mainline VSFilter history:
 ; Guliverkli:
 ;   r8   2.24 1.0.0.0 initial commit
@@ -218,8 +220,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ;   2.38-0611-4 fixes be1-dots and ugly-fade bugs and adds xbord/ybord/xshad/yshad/blur tags and extends be
 ;   2.39 merges with guliverkli2 fork
 ; TODO: "VSFilter" vs "DirectVobSub"?
-; TODO: MPC-BE, https://github.com/HomeOfVapourSynthEvolution/VSFilter, libjass, ASS.js, asa, old VLC, ffdshow, Subtitler, TextSub?
-; TODO: detect/handle various ASS demuxers
+; TODO: Kainote, MPC-BE, https://github.com/HomeOfVapourSynthEvolution/VSFilter, libjass, ASS.js, asa, old VLC, ffdshow, Subtitler, TextSub?
 ; TODO: try to fix this: VSFilter 2.39 and older are so slow they don't render anything at all until many seconds in if ever
 ;      (and this probably keeps getting worse as I keep adding lines). \fay200 is the biggest (but not only) offender.
 ;    ...Or is it? Now it's rather snappy again even with the \fay200 in. I have no idea what's going on.
@@ -256,7 +257,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ; Omit the space after Dialogue: to trick MKVToolNix into doing this. In case this gets fixed, add an explicit terminator so that MKVToolNix can be patched to do this explicitly.
 ; Add extra garbage after a timestamp to ensure that FFmpeg and VLC also put these lines in the stream header when parsing a standalone ASS file.
 ; When parsed by libass, these events will all have ReadOrder=0, so enforce ordering through the Layer field (otherwise they'd be reordered arbitrarily).
-; VSFilter parses these events too, but in my tests it never shows them. I'm not sure that this isn't merely a quirk of my particular setup, so keep hiding these events from VSFilter just in case.
+; VSFilter parses these events too, but then it somehow ignores them. Keep hiding these events from VSFilter just in case, but use this fact to detect mkvmerge+VSFilter.
 ; Add a zero replacing the removed space to ensure that Aegisub and FFmpeg read the correct Layer and that Aegisub is able to load the file at all,
 ; as they start reading the Layer field at a constant offset of 10 (and Aegisub aborts with an error if it is not a valid decimal integer).
 ; OUT OF ORDER: these versions are newer than 0.12.2+ 546f500 and older than 0.13.4+ 858196e.
@@ -271,6 +272,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 Dialogue:01,0:00:00.00!,0:00:10.00,Box,,0,0,0,,{\pos(0,288)\an1\c&H0000FF&\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-1,00000000000000000010000,0,0,0)}\N{\p1}m 0 0 l 384 0 384 288 0 288{\p0}
 Dialogue:02,0:00:00.00!,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-1,00000000000000000010000,0,0,0)}\NYou are using libass 0.12.2+\N3bbd058 to 0.13.4+ 580ae21\N(likely 0.12.2+ 8c8741f to 0.13.4+{\1a&HFF&}({\1a}\N580ae21, unless your platform\N{\1a&HFF&}).{\1a}has superwide integers).\NYour copy is outdated!
 ; This is shown only if unsigned int has at most 34 value bits. Otherwise, even in these libass versions, the above is shown instead.
+; TODO: simplify message based on Aegisub detection
 Dialogue:03,23860:55:45.92!,0:00:10.00,Box,,0,0,0,,{\pos(0,288)\an1\c&H0000FF&\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-1,00000000000000000010000,0,0,0)}\N{\p1}m 0 0 l 384 0 384 288 0 288{\p0}
 Dialogue:04,23860:55:45.92!,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{\fscx0{\1a&hFF&\fade(255,0,-1,00000000000000000010000,0,0,0)}\NYou are using libass 0.12.2+\N3bbd058 to 0.13.4+ 580ae21\N{\1a&HFF&},{\1a}(likely 0.12.2+ 3bbd058 to e0bde0b,{\1a&HFF&}({\1a}\N{\1a&HFF&}).{\1a}unless you are using Aegisub).\NYour copy is outdated!
 ; OUT OF ORDER: these versions are newer than 0.12.1+ b4c39b8 and older than 0.12.1+ 0d94ff4.
@@ -278,8 +280,16 @@ Dialogue:04,23860:55:45.92!,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{
 ; I used to have &H008484& here too.
 Dialogue:01,0:00:00.00!,00:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\p1}m 0 0 l 384 0 384 l 288 0 288{\p0}
 Dialogue:02,0:00:00.00!,00:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(m 0 0 l 384 0 384 l 288 0 288)}\NYou are using libass 0.12.1+ 9beeecc or 4567ad1.\NYour copy is outdated!
+Dialogue:-5,0:00:00.00!,0:00:10.00,Default,,0,0,0,,{\an8}You are using Aegisub.
+Dialogue:-5,0:00:00.00,0:00:00.00,Default,,0,0,0,,{ReadOrder padding for FFmpeg so libass doesn't skip the next event as a ReadOrder=0 duplicate}
+; TODO: distinguish FFmpeg+VSFilter and FFmpeg+Perian; fix FFmpeg+Aegisub overlap
+Dialogue:-98,0:00:00.00,0:00:00.0001000,Collision,,0,0,0,,You are using FFmpeg (unless you\N{\1a&HFF&}).{\1a&H00&}are viewing an FFmpeg-made MKV).
+Dialogue:06,0:00:00.00,0:00:10.00,Collision,,0,0,0,,\h\N\N\N\N\N\N
+Dialogue:099,0:00:00.00,0:00:10.00,Collision,,0,0,0,,\h\N\N\N\N\N\N
 end of codec private
 
+Dialogue: 6,0:00:00.00,0:00:10.00,Collision,,0,0,0,,{\1a&HFF&\1a}You are using VSFilter and viewing\N{\1aH&FF&}.{\1a}an MKVToolNix-made MKV.
+Dialogue: 99,0:00:00.00,0:00:10.00,Collision,,0,0,0,,{\1a\1a&HFF&}You are using Perian and viewing\N{\1aH&FF&}.{\1a&H00&\1a\1a&HFF&}an MKVToolNix-made MKV.
 Dialogue: 0,0:00:00.00,9:59:59.99,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\fscx4000\fscy4000}█{Perian ignores ASS vector drawings and mishandles the video this script comes with in various mysterious ways.}
 ; Perian deletes at most one leading asterisk from the style name in style definitions (and none in Dialogue lines),
 ; so this could be *Default, but that makes VSFilter 2.28 and older dereference NULL and display nothing.
@@ -437,6 +447,17 @@ Dialogue: 0,0:00:00.00,9:59:59.99,Old,,0,0,0,,{\move(0,-576,192,144,-1,-1)}You a
 Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\rHidden\c&H0000FF&\1a&&FF&\p1}m 0 0 l 384 0 384 288 0 288{\p0}
 Dialogue: 0,0:00:00.00,0:00:10.00,Old,,0,0,0,,{\pos(192,144)\rHidden}You are using libass 0.10.0+ 94b4c0d or older.\NYour copy is outdated!
 ; when \fa*\fsc* broken => "severely outdated"
+
+Dialogue: 7,0:00:00.00,0:00:10.00,Collision,,0,0,0,,\h\N\N\N\N\N\N
+Dialogue: 0000000000000007,0:00:00.00,0:00:10.00,Collision,,0,0,0,,{\1a&HFF&}\{\fscx0{\1a&H00&}\NYou are using VLC’s\N{\1a&HFF&}.{\1a}external subtitle parser.
+Dialogue: 8,0:00:00.00,0:00:10.00,Collision,,0,0,0,,\h\N\N\N\N\N\N
+
+[trick MKVToolNix into putting this in CodecPrivate and returning this here upon extraction]
+Dialogue:08,0:00:00.00,0:00:10.00,Collision,,0,0,0,,You are using libass and viewing\N{\1a&HFF&}.{\1a}an MKVToolNix-made MKV.
+Dialogue:0-1,0:00:00.00!,0:00:10.00,Collision,,0,0,0,,{\pos(192,56)\1a&HFF&}\{\fscx0{\1a&H00&}\NYou are using libass’s\N{\1a&HFF&}.{\1a}external subtitle parser.
+Dialogue:0-1,0:00:00.00!,0:00:&HA.00,Collision,,0,0,0,\N{\1a&HFF&}\{\1a&H00&}\NYou are using VSFilter’s\N{\1a&HFF&}.{\1a}external subtitle parser.
+Dialogue:0-1,0:00:00.00!,0:00:10.00,Collision,,0,0,0,You are using Perian’s\N{\fscy0}.{\fscy100}external subtitle parser.{Any alpha changes somehow turn this whole event invisible.}
+; TODO: why do any non-Perian lines use \1a&H00&? is \1a not enough?
 
 ; Dialogue: 9,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&HFFFFFF&\p1}m 0 0 l 384 0 384 288 0 288{\p0}
 ; Dialogue: 9,0:00:00.00,0:00:01.00,Box,,0,0,0,,{\an5\c&HFFFFFF&\t(\clip(0,0,384,144)\c&HFF0000&\frz90}A quick brown fox jumps over the lazy dog.
