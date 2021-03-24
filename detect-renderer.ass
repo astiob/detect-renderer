@@ -296,9 +296,10 @@ Dialogue:04,23860:55:45.92!,0:00:10.00,Default,,0,0,0,,{\pos(192,135)\1a&HFF&}\{
 ; I used to have &H008484& here too.
 Dialogue:01,0:00:00.00!,00:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H0000FF&\p1}m 0 0 l 384 0 384 l 288 0 288{\p0}
 Dialogue:02,0:00:00.00!,00:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(m 0 0 l 384 0 384 l 288 0 288)}\NYou are using libass 0.12.1+ 9beeecc or 4567ad1.\NYour copy is outdated!
-Dialogue:-5,0:00:00.00!,0:00:10.00,Default,,0,0,0,,{\an8}You are using Aegisub.
-Dialogue:-5,0:00:00.00,0:00:00.00,Default,,0,0,0,,{ReadOrder padding for FFmpeg so libass doesn't skip the next event as a ReadOrder=0 duplicate}
-; TODO: distinguish FFmpeg+VSFilter and FFmpeg+Perian; fix FFmpeg+Aegisub overlap
+Dialogue:-98,0:00:00.00!,0:00:10.00,Collision,,0,0,0,,\N\N\NYou are using Aegisub.\N\N\N
+Dialogue:-98,0:00:00.00,0:00:00.00,Default,,0,0,0,,{ReadOrder padding for FFmpeg so libass doesn't skip the next event as a ReadOrder=0 duplicate}
+; TODO: distinguish FFmpeg+VSFilter and FFmpeg+Perian; distinguish ASS+Aegisub from FFmpeg+Aegisub
+; this quirky end timestamp is no longer necessary when this uses Collision to evade Aegisub
 Dialogue:-98,0:00:00.00,0:00:00.0001000,Collision,,0,0,0,,You are using FFmpeg (unless you\N{\1a&HFF&}).{\1a&H00&}are viewing an FFmpeg-made MKV).
 Dialogue:06,0:00:00.00,0:00:10.00,Collision,,0,0,0,,\h\N\N\N\N\N\N
 Dialogue:099,0:00:00.00,0:00:10.00,Collision,,0,0,0,,\h\N\N\N\N\N\N
