@@ -74,9 +74,11 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ;    r11  somewhat broken* nested parentheses, \[1-4]img now takes decimal positions instead of hexadecimal
 ;    r17  fixed parentheses, \[1-4]img position now optional
 ;    ......
-;    r76  broke \fay (it's now a no-op) on SSE2-capable CPUs (missing "else") (when this is added to MPC-HC, it's mysteriousy fixed)
+;    r76  broke \fay (it's now a no-op), \fax and \fay on SSE2-capable CPUs (missing "else") (when this is added to MPC-HC, it's mysteriousy fixed)
 ;    ......
-;    r87  fixed \fay
+;    r87  fixed \fay without rotations (it's no longer a no-op, but it's incorrect with rotations)
+;    ......
+;    r89  modified broken \frx\fry but didn't fix them
 ;    ......
 ;    r91  Lua, LuaLog headers: both file paths, Lua loads the file and calls init() if it is a function
 ;    r92  \lua(funcname,arg1,arg2...) calls funcname(arg1,arg2...) which must return {style={bold=boolean}}
@@ -96,7 +98,20 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ; ** if customtransform is set, it is called instead of built-in 3D transforms;
 ;    otherwise beforetransform is called, then the built-in 3D transforms applied, then aftertransform called.
 ;    calling: for every point in the outline, call function with given name with {minx=,maxx=,miny=,maxy=,frx=,fry=,frz=,fscx=,fscy=,fax=,fay=,size={w=,h=},pos={x=,y=,z=},org={x=,y=}} and accept {x=float,y=float}
+; VSFilterMod fork: (https://github.com/sorayuki/VSFilterMod)
+;    r2     f885cfaf7d646c24de1ee2de5e968f587109ed2a modified \q3
+;           a4f55d12febe49a52428f34a362d1b518799d643 \mover fix
+;           a4d56e8bae79edff35c9276d759be0412449276c \movevc crash fix
+;           da27e74b3ef19d3a9b7d5b06b2075fd62a4c0f6a float in drawings: round()ed to 32.0 before scaling
+;           77910427fa2443e21b38ef97317bd5eaaa0f4000 fixed gradient base colours on \r: reset to style colours, not zero
+;           27a319bcddfdfa76e1a04dfd1dfb360bc73364bf gradient fixes
+;    r5.2.2 3299fbd6b157546fe205e62da8f184c5186221bf fixed \frx\fry
+; Still broken in VSFilterMod fork:
+;   \fay with rotations, see MPC-HC f9c085d79a4057ba755fddf21f888445f2c4c378
 ; MPC-HC:
+; 0709b6b6123f85d450e6010398d82dacb3847b57 fixed \frx on SSE2
+; 1602a6c7af81cc538867ee5323a82e4110a5ec9c fixed \frx\fry
+; f9c085d79a4057ba755fddf21f888445f2c4c378 fixed \fay with rotations on SSE2
 ;   2.37        https://github.com/mpc-hc/mpc-hc.git@0a1b11126125e4c1456673b31b25b2ed77d5f4a2 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@84                     \fax \fay (runs not split on changes) and some crash and pixmix fixes
 ;   2.37        https://github.com/mpc-hc/mpc-hc.git@08e6f7c90b4c2d8ddd6cbe165ab883035a0b6abb https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@140                    outline drawn even if \bord0, "fix : opaque box overlapped"
 ;   2.38        https://github.com/mpc-hc/mpc-hc.git@7c168f32ef65cb43adacceb4071aa503c382ce21 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@464                    Guliverkli2@58: \move(float) \org(float) \pos(float)
@@ -112,6 +127,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ;               https://github.com/mpc-hc/mpc-hc.git@bd96d9168129cbab728094c5b5773486fb291635 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@3560                   words starting "m 0 0 l" not rendered, anything with either width or height > 3300px not rendered
 ;               https://github.com/mpc-hc/mpc-hc.git@afd341e7291f3b9823fed7e33bdaebf885b907b1 https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@3607                   words starting "m 0 0 l" rendered again
 ;   2.41.2.4483 https://github.com/mpc-hc/mpc-hc.git@3723d940106be42a4361cba18c91de62054103ab https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@4483 MPC-HC 1.6.2.4483 VSFilterMod mostly removed
+;   2.41.?.???? https://github.com/mpc-hc/mpc-hc.git@416429425afda70980bae06ef16a8bfb2dbb13bb https://mpc-hc.svn.sourceforge.net/svnroot/mpc-hc/trunk@5569 MPC-HC 1.6.?.???? enabled VSFilterMod's SSE2 transform code, thereby breaking \fay\frx\fry on SSE2
 ;   2.41.6263   https://github.com/mpc-hc/mpc-hc.git@de14ef44e6cab14350be937ccb9664fdfcfe29a9                                                              MPC-HC 1.6.5.6263 \fscx(float) \fscy(float)
 ;               https://github.com/mpc-hc/mpc-hc.git@8f3d30412adad6bfa152c6ebf8738965bb79cf28                                                                                \frx\fry\frz converted to radians by multiplying by M_PI/180, z coordinate limit removed
 ; b98bbf8ea1c7a59725d88c57c4b5f534f11b7f23 supposedly reverts bd96d9168129cbab728094c5b5773486fb291635
@@ -234,7 +250,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ;  * It seems VSFilter keeps reusing /,[^,]*$/ as the next field when parsing Style, Dialogue etc. lines if there are not enough fields.
 ;  * VSFilter appears to create opaque box borders using its own polygon parser. Which can be overflown. Is this interesting?
 ;  * VSFilter automatically renames duplicate style definitions.
-;  * VSFilter, except MPC-HC, converts degrees to radians by multiplying by 3.1415/180. (MPC-HC and libass multiply by M_PI/180.)
+;  * VSFilter, except MPC-HC and xy since ec9dd9eb48f65da1265e6ac1380d20afb6dba310, converts degrees to radians by multiplying by 3.1415/180. (MPC-HC and libass multiply by M_PI/180.)
 ;  * VSFilter still read \pbo as an integer. (libass supports \pbo(float).)
 ;  * \t(t1,t2,tags) accepts (int)float, while \t(t1,t2,accel,tags) accepts only integers.
 ;  * In SSA styles, VSFilter applies alpha to OutlineColour (which is copied from ShadowColour) but not to ShadowColour.
