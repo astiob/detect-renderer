@@ -150,6 +150,8 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ;               https://github.com/mpc-hc/mpc-hc.git@b20e86fad2a5d7729638d772a0a5cd144f9e7189                                                                                opaque boxes drawn even if \bord0
 ;               https://github.com/mpc-hc/mpc-hc.git@a8a5bed7a1ad8680987a82bfa3574cd7d0f963f1                                                                                YCbCr Matrix header
 ;   2.41.141    https://github.com/mpc-hc/mpc-hc.git@b7b2ee8af888639340494783edc5065d8379f797                                                              MPC-HC 1.7.8.141  drawing parser partially fixed: only /[mnlbspc]/ rather than /\S/ recognized as cmd, but /[mnlbspc]*/ still skipped
+;   2.41.67     https://github.com/mpc-hc/mpc-hc.git@701ceec81e37de1d9f89ce82ced9bab7735a2eae                                                              MPC-HC 1.7.13.67  zero-point vector clips cause NULL dereference
+;   2.41.85     https://github.com/mpc-hc/mpc-hc.git@4710d66dff7a2bba5a8091aa2b4abe0323b6f52a                                                              MPC-HC 1.7.13.85  zero-point vector clips no longer crash but also no longer do anything
 ; *  \beN \t(\be) \blur \iclip \xbord \ybord \xshad \yshad,
 ;    glyph fill excluded from outline if \1a&H00&\2a&H00&\fad(active right now),
 ;    Banner effect position changed when \xbord != 0,
@@ -172,6 +174,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ;   oh god dem single numeric arguments. they should be taken from the string argument array, not from cmd.Mid()
 ;   alpha and color tags with a value consisting entirely of /^[&H]+$/ act as if they have a value of 0
 ;   the last drawing command should be remembered, not the first in a series of consecutive commands
+;   \clip(m) should hide the event
 ; Stuff now broken in MPC-HC because this makes more sense rite:
 ;   opaque boxes aren't double-scaled
 ;   opaque boxes are rendered even when \bord0 (interesting: guliverkli actually had this case commented out!)
@@ -352,7 +355,8 @@ Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,-144)\org(()\clip(0,
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\fs9.0078125\fs-9.982653946227233\clip(0,0,0,0)\lalala(\iclip(0,0,0,0))}You are using MPC-HC 1.7.1.308 to\N{\1a&HFF&}.{\1a}1.7.6.13, or the corresponding VSFilter.\NYour copy is outdated!
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,117)\an8\fs720\fs-9.75\clip(0,0,0,0)\lalala(\iclip(0,0,0,0))\iclip(m 0 0 l 384.0 0 384 288 0 288)}You are using MPC-HC 1.7.6.14 to\N{\1a&HFF&}.{\1a}1.7.6.23, or the corresponding VSFilter.\NYour copy is outdated!
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(m 0 0 l 384 0 !l 0 0 l 384 288 !l 0 0 l 0 288)}You are using MPC-HC 1.7.6.191 to\N{\1a&HFF&}.{\1a}1.7.8.140, or the corresponding VSFilter.\NYour copy is outdated!
-Dialogue: 0,0:00:00.00,0:00:10.00,Hidden,,0,0,0,,{\pos(192,135)\rBox\c&H009400&\clip(0,0,0,,)\lalala(\fs+0.32e3)}\N\N{\p1}m !m 0 0 l 384.0 0 384 288 0 288{\p0}
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(m 0 0 !ln 384 0 384 288 0 288)}You are using MPC-HC 1.7.8.141 to\N{\1a&HFF&}.{\1a}1.7.13.66, or the corresponding VSFilter.\NYour copy is outdated!
+Dialogue: 0,0:00:00.00,0:00:10.00,Hidden,,0,0,0,,{\pos(192,135)\rBox\c&H009400&\clip(0,0,0,,)\lalala(\fs+0.32e3)}\N\N{\p1}m lm 0 0 l 384.0 0 384 288 0 288{\p0}
 ; TODO: distinguish xy-VSFilter without support for float in drawings
 ; TODO: write "xy-VSFilter or XySubFilter" or something to that effect? No, apparently Cyberbeing's official POV is that 3.1 is XySubFilter and 3.0 is xy-VSFilter.
 ; TODO: find a way to distinguish XySubFilter
@@ -370,7 +374,8 @@ Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,-144)\clip(0,0,0,0)\
 ; Take care to put \fs1440 before \fs- and the broken \org so that Perian sees it and renders this text effectively invisible.
 Dialogue: 0,0:00:00.00,0:00:10.00,Hidden,,0,0,0,,{\pos(192,108)\an8\rDefault\fs1440\fs-0.9875e1\org(()\clip(0,0,0,0)))}You are using XySubFilter\N{\1a},{\1a&H00&}3.1.0.746 to 3.1.0.752,\Nor MPC-HC newer than this file\N{\1a}.{\1a&H00&}or the corresponding VSFilter.{Red background.}
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,117)\an8\org(()\clip(0,0,0,0))\fs0.1422e4\clip(m lm 0 0 l 384.0 0 384 288 0 288)}You are using MPC-HC\N{\1a&HFF&},{\1a}1.7.6.24 to 1.7.6.190,\N{\1a&HFF&}.{\1a}or the corresponding VSFilter.{Green background and no "outdated" message because this version is more correct than the newer one. (But both are bugged due to VSFilterMod and the new tag parser.)}
-Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(m 0 0 !ln 384 0 384 288 0 288)}You are using MPC-HC 1.7.8.141 or\N{\1a&HFF&}.{\1a}newer, or the corresponding VSFilter.
+Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H009400&\clip(m)\p1}m 0 0 l 384 0 384 288 0 288{\p0}
+Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\clip(m)}You are using MPC-HC 1.7.13.85 or\N{\1a&HFF&}.{\1a}newer, or the corresponding VSFilter.
 Dialogue: 0,0:00:00.00,0:00:10.00,Box,,0,0,0,,{\pos(0,0)\c&H008484&\1a&HFF&\1va(0,0,0,0)\p1}m 0 0 l 384.0 0 384 288 0 288{\p0}
 Dialogue: 0,0:00:00.00,0:00:10.00,Default,,0,0,0,,{\pos(192,144)\1a&HFF&\1va(0,0,0,0)\clip(m 0 0 l 384.0 0 384 288 0 288)}You are using SoraYuki’s VSFilterMod\N{\fscy0}.{\fscy}r4+ da27e74 or newer.{Yellowish background because VSFilterMod.}
 ; TODO: maybe distinguish MPC-HC versions that don't double-scale opaque boxes by showing
