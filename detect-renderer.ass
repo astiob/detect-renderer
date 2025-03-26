@@ -154,6 +154,8 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ;   2.41.141    https://github.com/mpc-hc/mpc-hc.git@b7b2ee8af888639340494783edc5065d8379f797                                                              MPC-HC 1.7.8.141  drawing parser partially fixed: only /[mnlbspc]/ rather than /\S/ recognized as cmd and no more buffer overread on trailing whitespace in \p drawings, but /[mnlbspc]*/ still skipped
 ;   2.41.67     https://github.com/mpc-hc/mpc-hc.git@701ceec81e37de1d9f89ce82ced9bab7735a2eae                                                              MPC-HC 1.7.13.67  crash on zero-point or invalid vector clips
 ;   2.41.85     https://github.com/mpc-hc/mpc-hc.git@4710d66dff7a2bba5a8091aa2b4abe0323b6f52a                                                              MPC-HC 1.7.13.85  zero-point or invalid vector clips no longer crash but also no longer do anything
+;   N/A         https://github.com/clsid2/mpc-hc.git@76ccd3983bcf28a1e6bb746ef1857fd1568221ca                                                              MPC-HC 1.9.24.36  \blur scaled to display height, but \t(\blur) interpolates between the scaled current value and the unscaled target value
+;   N/A         https://github.com/clsid2/mpc-hc.git@5476845252092032f8bf008595c52ad9f2e02e76                                                              MPC-HC 2.3.3.15   \t(\blur) fixed, \blur limited (clamped) to \blur25
 ; *  \beN \t(\be) \blur \iclip \xbord \ybord \xshad \yshad,
 ;    glyph fill excluded from outline if \1a&H00&\2a&H00&\fad(active right now),
 ;    Banner effect position changed when \xbord != 0,
